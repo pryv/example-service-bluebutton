@@ -1,0 +1,26 @@
+{
+  "name": "service-backup",
+  "version": "1.0.0",
+  "description": "Web service for clients to download all their data",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pryv/service-backup.git"
+  },
+  "keywords": [
+    "pryv",
+    "backup",
+    "web",
+    "tool",
+    "service"
+  ],
+  "author": "Ilia Kebets <kebetsi@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pryv/service-backup/issues"
+  },
+  "homepage": "https://github.com/pryv/service-backup#readme"
+}
