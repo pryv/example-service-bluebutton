@@ -38,3 +38,6 @@ jspm_packages
 
 # intelliJ
 .idea/
+redis-3.2.5/
+dump.rdb
+redis-data
