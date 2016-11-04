@@ -2,9 +2,10 @@
   "name": "service-backup",
   "version": "1.0.0",
   "description": "Web service for clients to download all their data",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
-    "test": "test"
+    "start": "node src/server.js",
+    "test": "mocha test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,10 @@
     "should": "^11.1.1"
   },
   "dependencies": {
-    "express": "^4.14.0"
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "nconf": "^0.8.4",
+    "readyness": "^0.1.0",
+    "winston": "^2.3.0"
   }
 }
