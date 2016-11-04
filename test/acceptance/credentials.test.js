@@ -3,8 +3,7 @@
 
 describe("Credentials", function () {
 
-
-  it('should accept valid credentials by sending a 200 status and caching it', function () {
+  it('should accept valid credentials and cache it', function () {
 
   });
 

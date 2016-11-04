@@ -6,7 +6,7 @@ describe('Download', function () {
 
   });
 
-  it('should be interruptible and resume the download process', function () {
+  it('should be interruptible and resuming the download process possible', function () {
 
   });
 
