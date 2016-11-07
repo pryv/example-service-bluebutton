@@ -1,5 +1,6 @@
 var nconf = require('nconf'),
-    fs = require('fs');
+    fs = require('fs'),
+    path = require('path');
 
 module.exports = nconf;
 
@@ -39,18 +40,11 @@ nconf.defaults({
     access : 'https://reg.pryv.li/access',
     appId: 'backup-test'
   },
-  oauth: {
-    secretPath: 'setElsewhere'
-  },
   http: {
     port: '3443',
     cert: 'rec.la',
     hostname: 'l.rec.la',
     ip: '127.0.0.1' // interface to bind,
-  },
-  redis: {
-    password: 'B4ckUp5-p45sW0rD5',
-    port : 6379
   },
   debug: {
     middlewareDebug : true
@@ -66,6 +60,9 @@ nconf.defaults({
         level: 'read'
       }
     ]
+  },
+  db: {
+    path: path.normalize(__dirname + '/../db-files/')
   }
 });
 
