@@ -20,7 +20,17 @@
       <input type="button" name="login" id="login" value="Login">
     </form>
   </div>
+
+  <div class="consoleClass">
+    <textarea cols=80 rows=10 name="console" id="console">
+
+    </textarea>
+  </div>
 </div>
+
+
+
+
 </body>
 <script>
   $(document).ready(function(){
@@ -52,6 +62,33 @@
           });
       }
     });
+  });
+
+  var last_index = 0;
+  function readStatus(key) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/status/' + key, true);
+
+    xhr.onprogress = function () {
+      var curr_index = xhr.responseText.length;
+      if (last_index == curr_index) return;
+      var s = xhr.responseText.substring(last_index, curr_index);
+      last_index = curr_index;
+      logToConsole(s);
+    };
+    xhr.send();
+  };
+
+  var $console = document.getElementById('console')
+
+  function logToConsole(text) {
+    $console.value += text;
+    $console.scrollTop =$console.scrollHeight;
+  }
+
+
+  $(function() {
+    readStatus('toto');
   });
   
 </script>
