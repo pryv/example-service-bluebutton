@@ -8,7 +8,7 @@ Prerequisites: Node, Redis
 
 ## Contribute
 
-Setup local environment `./scripts/setup-dev-envionment.bash`
+Setup local environment `./scripts/setup-dev-environment.bash`
 
 Start database `./db/start-database`
 
