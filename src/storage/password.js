@@ -1,11 +1,6 @@
 var config = require('../config'),
     logger = require('winston');
 
-var redis = require('redis').createClient(config.get('redis:port'));
-
-redis.on('error', function (err) {
-  logger.error('Redis error:', err);
-});
 
 /**
  * Erases all entries, returns an array of the size of erased entries

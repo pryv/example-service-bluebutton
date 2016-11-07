@@ -41,3 +41,4 @@ jspm_packages
 redis-3.2.5/
 dump.rdb
 redis-data
+*.iml
