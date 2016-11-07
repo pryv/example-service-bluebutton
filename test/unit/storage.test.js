@@ -3,23 +3,21 @@
 var should = require('should'),
     async = require('async');
 
-var storage = require('../../src/storage/password'),
-    config = require('../config');
+var password = require('../../src/storage/password');
 
 describe('Storage', function () {
 
-  var credentials = config.get('testUser');
+  var credentials = require('../data/testUser.json');
 
   before(function (done) {
-    // TODO
-    //storage.reset(done);
+    password.reset(done);
   });
 
   it('should save the user\'s password', function (done) {
 
     async.series([
       function savePassword(stepDone) {
-        storage.setPassword(credentials, function (err, res) {
+        password.set(credentials, function (err, res) {
           if (err) {
             return stepDone(err);
           }
@@ -28,7 +26,7 @@ describe('Storage', function () {
         });
       },
       function verifySaved(stepDone) {
-        storage.getPassword(credentials.username, function (err, res) {
+        password.get(credentials.username, function (err, res) {
           if (err) {
             return stepDone(err);
           }

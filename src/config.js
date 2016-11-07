@@ -25,30 +25,31 @@ if (configFile) {
   nconf.file({ file: configFile});
 }
 
+var certKey = __dirname + '/../node_modules/rec-la/src/' + 'rec.la' + '-';
+
 // Set default values
 nconf.defaults({
-  pryv: {
-    domain : 'domocare.io',
-    access : 'https://reg.domocare.io/access',
-    userCreation: 'https://reg.domocare.io/user',
-    register: 'https://reg.domocare.io',
-    hostingProvider: 'exoscale.ch-ch',
-    appId: 'bridge-domocare'
+  serverOptions: {
+    key: fs.readFileSync(certKey + 'key.pem').toString(),
+    cert: fs.readFileSync(certKey + 'cert.crt').toString(),
+    ca: fs.readFileSync(certKey + 'ca.pem').toString()
   },
-  domocare: {
-    clientId: 'domocare-all',
-    secret: 'setInHeadsetConfig',
-    origin: 'https://sw.domocare.io'
+  pryv: {
+    domain : 'pryv.li',
+    access : 'https://reg.pryv.li/access',
+    appId: 'backup-test'
   },
   oauth: {
     secretPath: 'setElsewhere'
   },
   http: {
-    port: '8080',
-    ip: '0.0.0.0' // interface to bind,
+    port: '3443',
+    cert: 'rec.la',
+    hostname: 'l.rec.la',
+    ip: '127.0.0.1' // interface to bind,
   },
   redis: {
-    password: 'D0m0b12idG3-p4s5w012d',
+    password: 'B4ckUp5-p45sW0rD5',
     port : 6379
   },
   debug: {
@@ -58,11 +59,11 @@ nconf.defaults({
     key: 'ToGenerateOne' // to generate one for bridge-domocare
   },
   pryvAccess: {  // access params of pryv.io token
-    name: 'domocareBridgeAccess',
+    name: 'backup-service',
     permissions: [
       {
         streamId: '*',
-        level: 'manage'
+        level: 'read'
       }
     ]
   }

@@ -1,31 +1,44 @@
 /*global describe, it, before*/
 var request = require('superagent'),
-    config = require('../config');w
+    should = require('should'),
+    config = require('../../src/config'),
+    password = require('../../src/storage/password'),
+    testUser = require('../data/testUser.json');
 
 require('../../src/server');
 
 require('readyness/wait/mocha');
 
-var should = require('should');
-
-var serverBasePath = 'http://' + config.get('http:ip') + ':' + config.get('http:port'),
-  domain = config.get('pryv:domain'),
-  appId = config.get('pryv:appId');
+var serverBasePath = 'https://' + config.get('http:hostname') + ':' + config.get('http:port');
 
 describe("Credentials", function () {
 
+  before(function (done) {
+    password.reset(done);
+  });
+
   it('should accept valid credentials and cache it', function (done) {
-    request.post(serverBasePath + '/login').send({
-      username: config.get('testUser:username'),
-      password: config.get('testUser:password'),
-      email: config.get('testUser:email')
-    }).set('Content-type','application/json').end(function (err, res) {
+    var validCredentials = {
+      username: testUser.username,
+      password: testUser.password,
+      email: testUser.email
+    };
+
+    console.log('creds', validCredentials)
+    console.log('ending to', serverBasePath)
+
+    request.post(serverBasePath + '/login').send(validCredentials).set('Content-type','application/json').end(function (err, res) {
       if (err) {
+        console.log('is it here')
         return done(err);
       }
       res.status.should.eql(200);
-      storage.
-      done();
+      password.get(validCredentials.username, function (err, res) {
+        console.log('found in redis:', res);
+        console.log('expected pw:');
+        (validCredentials.password).should.eql(res);
+        done();
+      });
     })
   });
 
