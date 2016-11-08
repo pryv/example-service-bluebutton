@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router(),
-    password = require('../storage/password'),
     pryv = require('pryv'),
+    db = require('../storage/db');
     util = require('util');
 
 router.post('/', function (req, res, next) {
@@ -26,13 +26,14 @@ router.post('/', function (req, res, next) {
 
   params.origin = 'https://sw.' + params.domain;
 
-  pryv.Connection.login(params, function (err, conn) {
+  pryv.Connection.login(params, function (err, connection) {
     if (err) {
       return res.send('Connection failed with Error:', util.inspect(err));
     }
 
-    // TODO: save token
-    var connection = conn;
+    // Save token
+    db.save(connection.username, {"token": connection.auth});
+
     res.send('Successfully Logged in...');
   });
 });
