@@ -3,39 +3,31 @@
 var should = require('should'),
     async = require('async');
 
-var password = require('../../src/storage/password');
+var db = require('../../src/storage/db');
 
 describe('Storage', function () {
 
   var credentials = require('../data/testUser.json');
+  var dummyToken = 'iamadummytoken'
 
   before(function (done) {
-    password.reset(done);
+    done();
   });
 
-  it('should save the user\'s password', function (done) {
+  it('should save the user\'s token', function (done) {
 
     async.series([
-      function savePassword(stepDone) {
-        password.set(credentials, function (err, res) {
-          if (err) {
-            return stepDone(err);
-          }
-          res.should.eql('OK');
-          stepDone()
-        });
+      function saveToken(stepDone) {
+      db.save(credentials.username, {"token": dummyToken});
+        stepDone();
       },
       function verifySaved(stepDone) {
-        password.get(credentials.username, function (err, res) {
-          if (err) {
-            return stepDone(err);
-          }
-          res.should.eql(credentials.password);
-          stepDone();
-        })
+        db.infos(credentials.username).token.should.eql(dummyToken);
+        stepDone();
       }
     ], done);
 
-  })
+  });
 
+  // TODO: test load
 });

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router(),
     pryv = require('pryv'),
-    db = require('../storage/db');
+    db = require('../storage/db'),
     util = require('util');
 
 router.post('/', function (req, res, next) {

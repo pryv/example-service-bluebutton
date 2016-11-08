@@ -27,12 +27,10 @@ module.exports.load = function () {
     }
   });
   console.log('Loaded ' + Object.keys(db).length + ' users.');
-
 };
 
 
 module.exports.save = function (username, infos) {
-
   fs.writeFileSync(userDbPath(username, '/infos.json'), JSON.stringify(infos));
   db[username] = infos;
 };

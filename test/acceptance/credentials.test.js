@@ -14,10 +14,10 @@ var serverBasePath = 'https://' + config.get('http:hostname') + ':' + config.get
 describe("Credentials", function () {
 
   before(function (done) {
-    password.reset(done);
+    done();
   });
 
-  it('should accept valid credentials and cache it', function (done) {
+  it('should connect with valid credentials and save the resulting token', function (done) {
     var validCredentials = {
       username: testUser.username,
       password: testUser.password
