@@ -12,6 +12,6 @@ app.use('/status', require('./routes/status'));
 
 app.use('/', express.static(__dirname + '/public_html'));
 
-console.log('loaded')
+console.log('loaded');
 
 module.exports = app;

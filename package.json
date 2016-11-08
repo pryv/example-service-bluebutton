@@ -37,6 +37,8 @@
     "nconf": "^0.8.4",
     "readyness": "^0.1.0",
     "superagent": "^2.3.0",
-    "winston": "^2.3.0"
+    "winston": "^2.3.0",
+    "pryv": "latest",
+    "util": "latest"
   }
 }
