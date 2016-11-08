@@ -2,7 +2,7 @@
 var request = require('superagent'),
     should = require('should'),
     config = require('../../src/config'),
-    password = require('../../src/storage/password'),
+    db = require('../../src/storage/db'),
     testUser = require('../data/testUser.json');
 
 require('../../src/server');
@@ -20,8 +20,7 @@ describe("Credentials", function () {
   it('should accept valid credentials and cache it', function (done) {
     var validCredentials = {
       username: testUser.username,
-      password: testUser.password,
-      email: testUser.email
+      password: testUser.password
     };
 
     console.log('creds', validCredentials)
@@ -33,12 +32,7 @@ describe("Credentials", function () {
         return done(err);
       }
       res.status.should.eql(200);
-      password.get(validCredentials.username, function (err, res) {
-        console.log('found in redis:', res);
-        console.log('expected pw:');
-        (validCredentials.password).should.eql(res);
-        done();
-      });
+      should.exists(db.infos(validCredentials.username).token);
     })
   });
 
