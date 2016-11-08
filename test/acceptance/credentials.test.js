@@ -28,7 +28,6 @@ describe("Credentials", function () {
 
     request.post(serverBasePath + '/login').send(validCredentials).set('Content-type','application/json').end(function (err, res) {
       if (err) {
-        console.log('is it here')
         return done(err);
       }
       res.status.should.eql(200);

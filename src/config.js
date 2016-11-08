@@ -36,8 +36,8 @@ nconf.defaults({
     ca: fs.readFileSync(certKey + 'ca.pem').toString()
   },
   pryv: {
-    domain : 'pryv.li',
-    access : 'https://reg.pryv.li/access',
+    domain : 'pryv.me',
+    access : 'https://reg.pryv.me/access',
     appId: 'backup-test'
   },
   http: {

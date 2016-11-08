@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router(),
     pryv = require('pryv'),
     db = require('../storage/db'),
-    util = require('util');
+    util = require('util'),
+    backup = require('backup-node'),
+    config = require('../config');
 
 router.post('/', function (req, res, next) {
 
@@ -14,27 +16,20 @@ router.post('/', function (req, res, next) {
     return next('Error: invalid password');
   }
 
-  // TODO: Use app-node-backup functions (need to be modularized)
   var params = {
-    appId: 'pryv-service-backup',
-    username: body.username,
-    password: body.password,
-    port: 443,
-    ssl: true,
-    domain: 'pryv.me'
+    "username": body.username,
+    "password": body.password,
+    "domain": config.get('pryv:domain')
   };
 
-  params.origin = 'https://sw.' + params.domain;
-
-  pryv.Connection.login(params, function (err, connection) {
-    if (err) {
-      return res.send('Connection failed with Error:', util.inspect(err));
+  backup.signInToPryv(params, function(err, connection) {
+    if(err) {
+      // TODO: granular error handling
+      return res.send("Login error: ", util.inspect(err));
     }
-
     // Save token
     db.save(connection.username, {"token": connection.auth});
-
-    res.send('Successfully Logged in...');
+    res.send("Successfully Logged in...");
   });
 });
 
