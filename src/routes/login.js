@@ -31,6 +31,7 @@ router.post('/', function (req, res, next) {
     // Save token
     db.save(connection.username, {"token": connection.auth});
     res.status(200).send("Successfully Logged in...");
+    
   });
 });
 

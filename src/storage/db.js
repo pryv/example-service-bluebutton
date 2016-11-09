@@ -45,7 +45,7 @@ module.exports.delete = function (username) {
 };
 
 function userDbPath(username, extra) {
-  var str = dbPath + '/' + username;
+  var str = dbPath + username;
   mkdirp(path.normalize(str));
   if (extra) { str += extra; }
   return path.normalize(str);
