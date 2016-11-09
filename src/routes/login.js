@@ -24,12 +24,13 @@ router.post('/', function (req, res, next) {
 
   backup.signInToPryv(params, function(err, connection) {
     if(err) {
-      // TODO: granular error handling
-      return res.send("Login error: ", util.inspect(err));
+      // TODO: redirect error from app-backup/pryv-connection?
+      return res.status(400).send("Login error:\n" , util.inspect(err));
     }
+
     // Save token
     db.save(connection.username, {"token": connection.auth});
-    res.send("Successfully Logged in...");
+    res.status(200).send("Successfully Logged in...");
   });
 });
 

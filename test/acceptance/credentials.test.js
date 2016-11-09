@@ -19,21 +19,29 @@ describe("Credentials", function () {
       password: testUser.password
     };
 
-    console.log('creds', validCredentials);
-    console.log('ending to', serverBasePath);
-
     request.post(serverBasePath + '/login').send(validCredentials).set('Content-type','application/json').end(function (err, res) {
       if (err) {
         return done(err);
       }
       res.status.should.eql(200);
       should.exists(db.infos(validCredentials.username).token);
+      db.delete(testUser.username);
       done();
     });
   });
 
   it('should reply with an error when credentials are invalid', function (done) {
-    done();
+    var invalidCredentials = {
+      username: testUser.username,
+      password: "blabla"
+    }
+
+    request.post(serverBasePath + '/login').send(invalidCredentials).set('Content-type','application/json').end(function (err, res) {
+      should.exists(err);
+      res.status.should.not.eql(200);
+      should.not.exists(db.infos(invalidCredentials.username));
+      done();
+    });
   });
 
 });

@@ -39,6 +39,10 @@ module.exports.infos = function (username) {
   return db[username];
 };
 
+module.exports.delete = function (username) {
+  fs.writeFileSync(userDbPath(username, '/infos.json'), JSON.stringify({}));
+  db[username] = null;
+};
 
 function userDbPath(username, extra) {
   var str = dbPath + '/' + username;
