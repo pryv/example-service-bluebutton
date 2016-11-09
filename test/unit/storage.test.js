@@ -11,13 +11,14 @@ var db = require('../../src/storage/db');
 describe('Storage', function () {
 
     var credentials = require('../data/testUser.json');
+    var dbPath = config.get('db:path') + credentials.username;
     var dummyToken = 'iamadummytoken';
 
     it('should save the user\'s token', function (done) {
         async.series([
             function saveToken(stepDone) {
                 db.save(credentials.username, {token: dummyToken});
-                stepDone()
+                stepDone();
             },
             function verifySaved(stepDone) {
                 should.equal(db.infos(credentials.username).token, dummyToken);
@@ -32,16 +33,16 @@ describe('Storage', function () {
 
     it('should load the user\'s info', function (done) {
 
-        var path = config.get('db:path') + credentials.username;
         var userInfo = {info: "blabla"};
         var json = JSON.stringify(userInfo);
 
         async.series([
             function createInfo(stepDone) {
-                mkdirp(path);
-                fs.writeFileSync(path + '/infos.json', json);
-                should.equal(JSON.stringify(require(path + '/infos.json')), json);
-                stepDone()
+                mkdirp(dbPath);
+                console.log(dbPath);
+                fs.writeFileSync(dbPath + '/infos.json', json);
+                should.equal(fs.readFileSync(dbPath + '/infos.json', 'utf-8'), json);
+                stepDone();
             },
             function loadInfo(stepDone) {
                 db.load();
@@ -61,20 +62,19 @@ describe('Storage', function () {
 
     it('should delete the user\'s info', function (done) {
 
-        var path = config.get('db:path') + credentials.username + '/infos.json';
-
         async.series([
             function saveInfo(stepDone) {
                 db.save(credentials.username, {trash: "blabla"});
                 should.exists(db.infos(credentials.username));
-                stepDone()
+                stepDone();
             },
             function deleteInfo(stepDone) {
                 db.delete(credentials.username);
                 stepDone();
             },
             function verifyDeleted(stepDone) {
-                should.equal(JSON.stringify(require(path)), "{}");
+                should.equal(fs.readFileSync(dbPath + '/infos.json', 'utf-8'), "{}");
+                should.equal(JSON.stringify(require(dbPath + '/infos.json')), "{}");
                 should.not.exists(db.infos(credentials.username));
                 stepDone();
             }
