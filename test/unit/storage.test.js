@@ -10,10 +10,6 @@ describe('Storage', function () {
   var credentials = require('../data/testUser.json');
   var dummyToken = 'iamadummytoken'
 
-  before(function (done) {
-    done();
-  });
-
   it('should save the user\'s token', function (done) {
 
     async.series([
