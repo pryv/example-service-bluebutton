@@ -4,7 +4,8 @@ var router = express.Router(),
     db = require('../storage/db'),
     util = require('util'),
     backup = require('backup-node'),
-    config = require('../config');
+    config = require('../config'),
+    service = require('../service');
 
 router.post('/', function (req, res, next) {
 
@@ -28,6 +29,7 @@ router.post('/', function (req, res, next) {
       return res.status(400).send("Login error:\n" , util.inspect(err));
     }
 
+    service.setConnection(connection, params);
     // Save token
     db.save(connection.username, {"token": connection.auth});
     res.status(200).send("Successfully Logged in...");
