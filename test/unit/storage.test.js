@@ -81,4 +81,5 @@ describe('Storage', function () {
         ], done);
     });
 
+    // TODO: Add log tests
 });

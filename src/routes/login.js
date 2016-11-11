@@ -5,7 +5,7 @@ var router = express.Router(),
     util = require('util'),
     backup = require('backup-node'),
     config = require('../config'),
-    service = require('../service');
+    service = require('./backup');
 
 router.post('/', function (req, res, next) {
 

@@ -34,6 +34,10 @@
 </body>
 <script>
   $(document).ready(function(){
+
+    // TODO: Add backup button
+    // TODO: Handle response with status
+
     $("#login").click(function(){
       var username = $("#username").val();
       var password = $("#password").val();
@@ -81,12 +85,12 @@
 
   var $console = document.getElementById('console')
 
-  function logToConsole(text) {
-    $console.value += text;
+  function logToConsole(text, append) {
+    $console.value = text;
     $console.scrollTop =$console.scrollHeight;
   }
 
-
+  // TODO: read status with token as key
   $(function() {
     readStatus('toto');
   });

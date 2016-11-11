@@ -34,6 +34,18 @@ module.exports.save = function (username, infos) {
   db[username] = infos;
 };
 
+module.exports.appendLog = function (token, message) {
+  fs.writeFileSync(userDbPath(token, '/log.json'), message, {'flag':'a'});
+};
+
+module.exports.resetLog = function (token) {
+  fs.writeFileSync(userDbPath(token, '/log.json'), "");
+};
+
+module.exports.log = function (token) {
+  return fs.readFileSync(userDbPath(token, '/log.json'), 'utf-8');
+};
+
 module.exports.infos = function (username) {
   return db[username];
 };

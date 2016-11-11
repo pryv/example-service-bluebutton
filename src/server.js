@@ -14,7 +14,7 @@ db.load();
 
 server.listen(config.get('http:port'), config.get('http:ip'), function () {
   logger.info('Service backup v' + version + ' in ' + app.settings.env +
-    ' mode listening on:' + config.get('http:ip') + ':' + config.get('http:port'));
+    ' mode listening on: https://' + config.get('http:hostname') + ':' + config.get('http:port'));
 }).on('error', function (e) {
   logger.error('Failed to listen on ' + config.get('http:ip') + ':' + config.get('http:port') +
     ': ' + e);
