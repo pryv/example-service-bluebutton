@@ -44,9 +44,12 @@ router.post('/', function (req, res, next) {
     if(status === 'running') {
       // TODO: not same instance => not same token?
       res.status(200).send(token);
+      console.log('running');
     } else if (status === 'complete') {
       // TODO: provide link
+      console.log('complete');
     } else {
+      console.log('start');
       res.status(200).send(token);
       // Start backup
       params.includeTrashed = body.includeTrashed;
