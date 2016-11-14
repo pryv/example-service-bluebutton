@@ -32,8 +32,7 @@ router.post('/', function (req, res, next) {
 
   backup.signInToPryv(params, function(err, connection) {
     if(err) {
-      // TODO: redirect error from app-backup/pryv-connection?
-      return res.status(400).send(null);
+      return res.status(400).send(err);
     }
 
     // Save token

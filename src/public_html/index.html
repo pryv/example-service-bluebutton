@@ -47,19 +47,29 @@
         $('input[type="text"],input[type="password"]').css("box-shadow","0 0 3px red");
         alert("Please fill all fields...!!!!!!");
       } else {
-        $.post("/login",{ username: username, password:password},
-          function(data) {
-            if(data){
+
+        $.ajax({
+          url: "/login",
+          type : 'POST',
+          data : { username: username, password: password},
+          success: function(data, textStatus, xhr) {
+            if(xhr.status === 200) {
               $("form")[0].reset();
               $('input[type="text"],input[type="password"]').css({"border":"2px solid #00F5FF","box-shadow":"0 0 5px #00F5FF"});
               $(function() {
                 readStatus(username, data);
               });
-            } else{
-              $('input[type="text"],input[type="password"]').css({"border":"2px solid red","box-shadow":"0 0 3px red"});
-              alert('Invalid login!');
             }
-          });
+          },
+          error : function(res, status, err){
+            $('input[type="text"],input[type="password"]').css({"border":"2px solid red","box-shadow":"0 0 3px red"});
+            if(res.responseJSON) {
+              alert(res.responseJSON.message);
+            } else{
+              alert(res.responseText);
+            }
+          }
+        });
       }
     });
   });
