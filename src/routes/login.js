@@ -38,7 +38,6 @@ router.post('/', function (req, res, next) {
     // Save token
     token = connection.auth;
     db.save(connection.username, {"token": token});
-    res.status(200).send(token);
 
     var infos = db.infos(username);
 
