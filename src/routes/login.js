@@ -40,12 +40,24 @@ router.post('/', function (req, res, next) {
     db.save(connection.username, {"token": token});
     res.status(200).send(token);
 
-    // Start backup
-    params.includeTrashed = body.includeTrashed;
-    params.includeAttachments = body.includeAttachments;
-    params.backupDirectory = new BackupDirectory(username, params.domain);
-    db.resetLog(username);
-    backup.startOnConnection(connection, params, backupComplete, log);
+    var infos = db.infos(username);
+
+    if(infos.status === 'running') {
+      // TODO: not same instance => not same token?
+      res.status(200).send(token);
+    } else if (infos.status === 'complete') {
+      // TODO: provide link
+    } else {
+      res.status(200).send(token);
+      // Start backup
+      params.includeTrashed = body.includeTrashed;
+      params.includeAttachments = body.includeAttachments;
+      params.backupDirectory = new BackupDirectory(username, params.domain);
+      db.resetLog(username);
+      backup.startOnConnection(connection, params, backupComplete, log);
+      infos.status = 'running';
+      db.save(username, infos);
+    }
   });
 });
 
@@ -54,8 +66,13 @@ var log = function(message) {
 };
 
 var backupComplete = function(err) {
-  // TODO: handle backup completion
-  console.log('Finish');
+  if(err) {
+    return db.appendLog(username, err);
+  }
+  db.appendLog(username, 'Backup completed!');
+  var infos = db.infos(username);
+  infos.status = 'complete';
+  db.save(username, infos);
 };
 
 module.exports = router;
