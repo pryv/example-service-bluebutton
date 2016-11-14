@@ -29,7 +29,9 @@ module.exports.load = function () {
   console.log('Loaded ' + Object.keys(db).length + ' users.');
 };
 
-module.exports.save = function (username, infos) {
+module.exports.save = function (username, key, value) {
+  var infos = db[username] ? db[username] : {};
+  infos[key] = value;
   fs.writeFileSync(userDbPath(username, '/infos.json'), JSON.stringify(infos));
   db[username] = infos;
 };
