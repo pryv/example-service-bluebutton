@@ -21,6 +21,7 @@ describe('Storage', function () {
                 stepDone();
             },
             function verifySaved(stepDone) {
+                should.exists(db.infos(credentials.username));
                 should.equal(db.infos(credentials.username).token, dummyToken);
                 stepDone();
             },
@@ -50,7 +51,7 @@ describe('Storage', function () {
             },
             function verifyLoaded(stepDone) {
                 should.exists(db.infos(credentials.username));
-                //should.equal(db.infos(credentials.username).info, userInfo.info);
+                should.equal(db.infos(credentials.username).info, userInfo.info);
                 stepDone();
             },
             function clean(stepDone) {
@@ -65,7 +66,6 @@ describe('Storage', function () {
         async.series([
             function saveInfo(stepDone) {
                 db.save(credentials.username, {trash: "blabla"});
-                should.exists(db.infos(credentials.username));
                 stepDone();
             },
             function deleteInfo(stepDone) {

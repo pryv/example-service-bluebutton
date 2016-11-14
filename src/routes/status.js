@@ -3,16 +3,20 @@ var express = require('express'),
 
 var db = require('../storage/db');
 
-router.get('/:key', function (req, res, next) {
-
-
+router.post('/', function (req, res, next) {
   res.writeHead(200, { 'Content-Type': 'application/octet-stream',
   'Content-Type': 'text/html; charset=utf-8',
   'Transfer-Encoding': 'chunked'
   });
 
   function tick() {
-    res.write(db.log(req.params.key));
+    var body = req.body,
+        username = body.username;
+    if(db.infos(username).token === body.token) {
+      res.write(db.log(username));
+    } else {
+      res.write('Invalid credentials!');
+    }
   }
 
   // TODO: update only when changes

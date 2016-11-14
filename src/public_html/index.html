@@ -46,22 +46,18 @@
         $('input[type="text"],input[type="password"]').css("border","2px solid red");
         $('input[type="text"],input[type="password"]').css("box-shadow","0 0 3px red");
         alert("Please fill all fields...!!!!!!");
-      }else {
+      } else {
         $.post("/login",{ username: username, password:password},
           function(data) {
-            if(data=='Invalid Email.......') {
-              $('input[type="text"]').css({"border":"2px solid red","box-shadow":"0 0 3px red"});
-              $('input[type="password"]').css({"border":"2px solid #00F5FF","box-shadow":"0 0 5px #00F5FF"});
-              alert(data);
-            }else if(data=='Email or Password is wrong...!!!!'){
-              $('input[type="text"],input[type="password"]').css({"border":"2px solid red","box-shadow":"0 0 3px red"});
-              alert(data);
-            } else if(data=='Successfully Logged in...'){
+            if(data){
               $("form")[0].reset();
               $('input[type="text"],input[type="password"]').css({"border":"2px solid #00F5FF","box-shadow":"0 0 5px #00F5FF"});
-              alert(data);
+              $(function() {
+                readStatus(username, data);
+              });
             } else{
-              alert(data);
+              $('input[type="text"],input[type="password"]').css({"border":"2px solid red","box-shadow":"0 0 3px red"});
+              alert('Invalid login!');
             }
           });
       }
@@ -69,9 +65,9 @@
   });
 
   var last_index = 0;
-  function readStatus(key) {
+  function readStatus(username, token) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/status/' + key, true);
+    xhr.open('POST', '/status', true);
 
     xhr.onprogress = function () {
       var curr_index = xhr.responseText.length;
@@ -80,20 +76,16 @@
       last_index = curr_index;
       logToConsole(s);
     };
-    xhr.send();
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({username: username, token: token}));
   };
 
-  var $console = document.getElementById('console')
+  var $console = document.getElementById('console');
 
-  function logToConsole(text, append) {
+  function logToConsole(text) {
     $console.value = text;
     $console.scrollTop =$console.scrollHeight;
   }
-
-  // TODO: read status with token as key
-  $(function() {
-    readStatus('toto');
-  });
   
 </script>
 </html>
