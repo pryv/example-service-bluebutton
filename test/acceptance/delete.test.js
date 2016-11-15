@@ -67,10 +67,10 @@ describe("Delete", function () {
             },
             function deleteRequest(stepDone) {
                 request.post(serverBasePath + '/delete').send(credentials).set('Content-type','application/json').end(function (err, res) {
-                    should.not.exists(err);
+                    should.exists(err);
                     res.status.should.not.eql(200);
-                    should.equal(fs.existSync(backupDir.baseDir), true);
-                    backupDir(username, config.get('pryv:domain')).deleteDirs(stepDone);
+                    should.equal(fs.existsSync(backupDir.baseDir), true);
+                    backupDir.deleteDirs(stepDone);
                 });
             }
         ], done);
