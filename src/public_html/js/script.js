@@ -44,6 +44,10 @@ function loginProccess() {
   }
 }
 
+/*
+ ** Script functions
+ */
+
 var last_index = 0;
 
 function readStatus(username, token) {
@@ -86,6 +90,10 @@ function stateChange(state) {
   }
 }
 
+/*
+ ** Format and adapt display
+ */
+
 function colorError() {
   $('input[type="text"],input[type="password"]').css({
     "border": "1px solid #B40000",
@@ -100,7 +108,30 @@ function colorError() {
 }
 
 function alertDisplay(message) {
+  if (message.isTooBig($(".main").innerWidth() / 15) === true) {
+    message = message.formatMessage($(".main").innerWidth() / 15);
+  }
   console.log(message);
- $("#alertMessage").text(message);
+  $("#alertMessage").text(message);
   $(".alert").show();
 }
+
+String.prototype.formatMessage = function (width) {
+  var newMessage = '';
+  for (var i = 0; i < this.length; i++) {
+    if (i % Math.round(width) === 0) { newMessage += '\n'; }
+    else { newMessage += this[i]; }
+  }
+  return newMessage;
+};
+
+String.prototype.isTooBig = function (width) {
+  var count = 0;
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] === '\n') { count = 0; }
+    if (count === i) { return true }
+    count++;
+  }
+  console.log(count);
+  return false;
+};

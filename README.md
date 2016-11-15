@@ -1,17 +1,12 @@
-# service-backup
+# Pryv Service Backup
 
 Backup API service for Pryv
 
 ## Usage
 
-Prerequisites: Node, Redis
+Prerequisites: *node* & *npm*
 
-## Contribute
-
-Setup local environment `./scripts/setup-dev-environment.bash`
-
-Start database `./db/start-database`
-
-Start API server: `npm start`
-
-Run tests: `npm test`
+* Install *grunt* globally `npm install grunt -g`
+* Install dependencies: `npm install`
+* Start API server: `npm start`
+* Open the following link in a browser: https://l.rec.la:3443

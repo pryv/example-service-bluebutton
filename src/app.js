@@ -12,6 +12,7 @@ app.use('/login', require('./routes/login'));
 app.use('/status', require('./routes/status'));
 app.use('/delete', require('./routes/delete'));
 
+console.log('Path of HTML File: ' + path.normalize(__dirname + '/../dist/index.html'), ' [CONSOLE.LOG IN APP.JS TO DELETE]');
 app.use('/', express.static(path.normalize(__dirname + '/../dist/index.html')));
 
 module.exports = app;
