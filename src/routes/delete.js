@@ -1,8 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    config = require('../config');
-
-var BackupDirectory = backup.Directory;
+    config = require('../config'),
+    BackupDirectory = require('backup-node').Directory;
 
 router.post('/', function (req, res, next) {
     var body = req.body,
