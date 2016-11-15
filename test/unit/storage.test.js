@@ -14,15 +14,24 @@ describe('Storage', function () {
     var dbPath = config.get('db:path') + credentials.username;
     var dummyToken = 'iamadummytoken';
 
-    it('should save the user\'s token', function (done) {
+    it('should save the user\'s token and update it', function (done) {
         async.series([
             function saveToken(stepDone) {
-                db.save(credentials.username, {token: dummyToken});
+                db.save(credentials.username, 'token', dummyToken);
                 stepDone();
             },
             function verifySaved(stepDone) {
                 should.exists(db.infos(credentials.username));
                 should.equal(db.infos(credentials.username).token, dummyToken);
+                stepDone();
+            },
+            function updateToken(stepDone) {
+                db.save(credentials.username, 'token', dummyToken+1);
+                stepDone();
+            },
+            function verifyUpdated(stepDone) {
+                should.exists(db.infos(credentials.username));
+                should.equal(db.infos(credentials.username).token, dummyToken+1);
                 stepDone();
             },
             function clean(stepDone) {
@@ -65,16 +74,14 @@ describe('Storage', function () {
 
         async.series([
             function saveInfo(stepDone) {
-                db.save(credentials.username, {trash: "blabla"});
+                db.save(credentials.username, 'trash', "blabla");
                 stepDone();
             },
             function deleteInfo(stepDone) {
-                db.delete(credentials.username);
-                stepDone();
+                db.delete(credentials.username, stepDone);
             },
             function verifyDeleted(stepDone) {
-                should.equal(fs.readFileSync(dbPath + '/infos.json', 'utf-8'), "{}");
-                should.equal(JSON.stringify(require(dbPath + '/infos.json')), "{}");
+                should.equal(fs.existsSync(dbPath + credentials.username),false);
                 should.not.exists(db.infos(credentials.username));
                 stepDone();
             }
