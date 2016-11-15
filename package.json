@@ -41,6 +41,7 @@
     "pryv": "latest",
     "util": "latest",
     "backup-node": "git://github.com/pryv/app-node-backup.git#feature\/pipe-stdout",
-    "rmdir": "latest"
+    "rmdir": "latest",
+    "zip-folder": "latest"
   }
 }

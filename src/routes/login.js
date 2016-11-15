@@ -43,11 +43,12 @@ router.post('/', function (req, res, next) {
 
     if(status === 'running') {
       // TODO: not same instance => not same token?
-      res.status(200).send(token);
       console.log('running');
+      res.status(200).send(token);
     } else if (status === 'complete') {
       // TODO: provide link
       console.log('complete');
+      res.status(200).send(token);
     } else {
       console.log('start');
       res.status(200).send(token);
