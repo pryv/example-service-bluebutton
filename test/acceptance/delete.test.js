@@ -44,9 +44,7 @@ describe("Delete", function () {
                     should.not.exists(err);
                     res.status.should.eql(200);
                     should.equal(fs.existsSync(backupDir.baseDir), false);
-                    db.delete(credentials.username);
-                    should.not.exists(db.infos(credentials.username));
-                    stepDone();
+                    db.delete(credentials.username, stepDone);
                 });
             }
         ], done);
