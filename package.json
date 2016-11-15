@@ -27,9 +27,16 @@
   "devDependencies": {
     "mocha": "^3.1.2",
     "should": "^11.1.1",
-    "rec-la": "https://github.com/pryv/rec-la.git"
+    "rec-la": "https://github.com/pryv/rec-la.git",
+    "grunt": "latest",
+    "grunt-shell": "latest",
+    "grunt-browserify": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-watch": "latest"
   },
   "dependencies": {
+    "jquery": "latest",
     "async": "^2.1.2",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",

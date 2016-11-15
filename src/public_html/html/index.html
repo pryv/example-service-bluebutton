@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>Pryv Service Backup</title>
+    <link href="./style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="./script-browserify.js"></script>
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div class="main">
+
+        <h1>
+            <img src="./icon-pryv.png"><img>
+            Pryv Service Backup
+        </h1>
+
+        <div class="container">
+            <div class="loginView">
+                <h2>Pryv Login</h2>
+
+                <label>Username :</label>
+                <input type="text" name="username" id="username" placeholder="Enter your username.">
+
+                <label>Password :</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password.">
+
+                <button id="login">Login</button>
+            </div>
+
+            <div class="consoleView">
+                <textarea id="console" cols="80" rows="10" value=""></textarea>
+            </div>
+        </div>
+
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <p id="alertMessage"></p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
