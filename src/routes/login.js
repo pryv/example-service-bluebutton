@@ -5,18 +5,22 @@ var express = require('express'),
     util = require('util'),
     backup = require('backup-node'),
     BackupDirectory = backup.Directory,
-    config = require('../config');
+    config = require('../config'),
+    zip = require('zip-folder');
 
 // TODO: What if multiple parallel backups?
 var token = null,
-    username = null;
+    username = null,
+    backupDir = null;
 
 router.post('/', function (req, res, next) {
 
   var body = req.body,
       password = body.password;
+
   username = body.username;
 
+  // TODO: figure out this next() and do the same for other routes
   if (! username || username.length <= 4) {
     return next('Error: invalid username');
   }
@@ -30,6 +34,8 @@ router.post('/', function (req, res, next) {
     "domain": config.get('pryv:domain')
   };
 
+  backupDir = new BackupDirectory(username, params.domain);
+
   backup.signInToPryv(params, function(err, connection) {
     if(err) {
       return res.status(400).send(err);
@@ -39,27 +45,17 @@ router.post('/', function (req, res, next) {
     token = connection.auth;
     db.save(connection.username, 'token', token);
 
-    var status = db.infos(username).status;
-
-    if(status === 'running') {
-      // TODO: not same instance => not same token?
-      console.log('running');
-      res.status(200).send(token);
-    } else if (status === 'complete') {
-      // TODO: provide link
-      console.log('complete');
-      res.status(200).send(token);
-    } else {
-      console.log('start');
-      res.status(200).send(token);
+    if(db.infos(username).idle) {
       // Start backup
       params.includeTrashed = body.includeTrashed;
       params.includeAttachments = body.includeAttachments;
-      params.backupDirectory = new BackupDirectory(username, params.domain);
+      params.backupDirectory = backupDir;
       db.resetLog(username);
       backup.startOnConnection(connection, params, backupComplete, log);
-      db.save(username, 'status', 'running');
+      db.save(username, 'idle', false);
     }
+
+    res.status(200).send(token);
   });
 });
 
@@ -67,12 +63,19 @@ var log = function(message) {
   db.appendLog(username, message);
 };
 
+// TODO: use streams for log in db and close stream when error or complete
 var backupComplete = function(err) {
   if(err) {
     return db.appendLog(username, err);
   }
-  db.appendLog(username, 'Backup completed!');
-  db.save(username, 'status', 'complete');
+  var name = backupDir + token + '.zip';
+  zip(backupDir, name, function(err) {
+    if(err) {
+      db.appendLog(username, 'Zip creation error');
+    }
+    db.appendLog(username, 'Backup completed!');
+    db.save(username, 'idle', 'true');
+  });
 };
 
 module.exports = router;

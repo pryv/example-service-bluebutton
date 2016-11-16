@@ -9,20 +9,20 @@ router.post('/', function (req, res, next) {
     'Transfer-Encoding': 'chunked'
   });
 
-  function tick() {
-    var body = req.body,
-        username = body.username;
-    if(db.infos(username).token === body.token) {
-      res.write(db.log(username));
-    } else {
-      res.write('Invalid credentials!');
-    }
+  var body = req.body,
+      username = body.username;
+
+  // TODO: handle errors and completion
+  if(db.infos(username).token === body.token) {
+    setTimeout(tick, 1000);
+  } else {
+    res.end('Invalid credentials!');
   }
 
-  // TODO: update only when changes
-  setTimeout(tick, 1000);
-
-  // TODO: complete with res.end, req.on close
+  // TODO: use stream to update only when changes occur
+  function tick() {
+    res.write(db.log(username));
+  }
 
 });
 
