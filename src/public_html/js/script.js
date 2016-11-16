@@ -1,16 +1,22 @@
 var $ = require("jquery");
 
 $(document).ready(function(){
-  $(".alert").hide();
+  changeWidth();
   stateChange('login');
   $("#login").click(function(){
     loginProccess();
   });
   $(document).keypress(function (key) {
-    if(key.which === 13) { loginProccess(); }
+    if (key.which === 13) { loginProccess(); }
+    if (key.which === 0) { $(".alert").hide(); }
   });
-
+  $(window).resize(changeWidth);
 });
+
+/*
+ ** Script functions
+ */
+
 function loginProccess() {
   // TODO: Add backup button
   // TODO: Handle response with status
@@ -44,10 +50,6 @@ function loginProccess() {
   }
 }
 
-/*
- ** Script functions
- */
-
 var last_index = 0;
 
 function readStatus(username, token) {
@@ -57,19 +59,21 @@ function readStatus(username, token) {
   xhr.onprogress = function () {
     var curr_index = xhr.responseText.length;
     if (last_index == curr_index) return;
-    var s = xhr.responseText.substring(last_index, curr_index);
+    var str = xhr.responseText.substring(last_index, curr_index);
     last_index = curr_index;
-    logToConsole(s);
+    logToConsole(str);
   };
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(JSON.stringify({username: username, token: token}));
 }
 
-var $console = document.getElementById('console');
-
-function logToConsole(text) {
-  $console.value = text;
-  $console.scrollTop =$console.scrollHeight;
+function logToConsole(str) {
+  var prev = $("#console").text();
+  if (prev) {
+    $("#console").text(prev + '\n' + str);
+  } else {
+    $("#console").text(str);
+  }
 }
 
 function stateChange(state) {
@@ -77,6 +81,7 @@ function stateChange(state) {
     case "login":
       $(".loginView").show();
       $(".consoleView").hide();
+      $(".alert").hide();
       break;
     case "running":
       $(".loginView").hide();
@@ -107,31 +112,35 @@ function colorError() {
   });
 }
 
-function alertDisplay(message) {
-  if (message.isTooBig($(".main").innerWidth() / 15) === true) {
-    message = message.formatMessage($(".main").innerWidth() / 15);
+function changeWidth() {
+  var width = $(window).width();
+  if (width <= 1000) {
+    $(".wrapper").width(425);
+  } else if (width <= 1400) {
+    $(".wrapper").width(875);
+  } else if (width <= 1600) {
+    $(".wrapper").width(1075);
+  } else if (width > 1600) {
+    $(".wrapper").width(1275);
   }
-  console.log(message);
-  $("#alertMessage").text(message);
+}
+
+function alertDisplay(message) {
+  $("#alertMessage").text(message.formatMessage(Math.round($(".main").innerWidth() / 15)));
   $(".alert").show();
 }
 
 String.prototype.formatMessage = function (width) {
-  var newMessage = '';
-  for (var i = 0; i < this.length; i++) {
-    if (i % Math.round(width) === 0) { newMessage += '\n'; }
-    else { newMessage += this[i]; }
+  var str = this.toString();
+  for (var i = 0; i < str.length; i++) {
+    if (i != 0 && i % width === 0) {
+      for (var j = i; j > 0; j--) {
+        if (str[j] === ' ') {
+          str = str.substr(0, j) + '\n' + str.substr(j + 1);
+          break;
+        }
+      }
+    }
   }
-  return newMessage;
-};
-
-String.prototype.isTooBig = function (width) {
-  var count = 0;
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] === '\n') { count = 0; }
-    if (count === i) { return true }
-    count++;
-  }
-  console.log(count);
-  return false;
+  return str;
 };

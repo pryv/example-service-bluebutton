@@ -11,7 +11,7 @@ body {
 .wrapper{
     border-radius: 3px;
     background-color: #FFFFFF;
-    width: 97%;
+    width: 875px;
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
@@ -71,7 +71,7 @@ body {
 }
 
 .consoleView textarea {
-    width: 80em;
+    width: 97%;
     height: 15em;
 }
 
