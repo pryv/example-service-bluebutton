@@ -18,6 +18,8 @@ $(document).ready(function(){
  */
 
 function loginProccess() {
+  if ($("#login").is(":visible") === false) { return; }
+
   // TODO: Add backup button
   // TODO: Handle response with status
   var username = $("#username").val();
