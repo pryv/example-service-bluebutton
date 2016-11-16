@@ -49,7 +49,6 @@
     "util": "latest",
     "backup-node": "git://github.com/pryv/app-node-backup.git#feature\/pipe-stdout",
     "rmdir": "latest",
-    "zip-folder": "latest",
-    "chokidar": "latest"
+    "zip-folder": "latest"
   }
 }
