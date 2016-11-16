@@ -88,5 +88,23 @@ describe('Storage', function () {
         ], done);
     });
 
-    // TODO: Add log tests
+    if('should append the log file for the specified user', function (done) {
+
+    });
+
+    if('should return the log content for the specified user', function (done) {
+
+    });
+
+    if('should reset the log content for the specified user', function (done) {
+
+    });
+
+    if('should watch the log file for the specified user', function (done) {
+
+    });
+
+    if('should unwatch the log file for the specified user', function (done) {
+
+    });
 });

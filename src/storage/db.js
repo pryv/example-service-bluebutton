@@ -11,13 +11,16 @@ var mkdirp = require('mkdirp'),
     fs = require('fs'),
     path = require('path'),
     rmdir = require('rmdir'),
-    async = require('async');
+    async = require('async'),
+    fileWatch = require('chokidar');
+;
 
 var dbPath = config.get('db:path');
 
 mkdirp(dbPath);
 
-var db = {};
+var db = {},
+    watchers = [];
 
 module.exports.load = function () {
     var ls = fs.readdirSync(dbPath);
@@ -47,6 +50,22 @@ module.exports.resetLog = function (username) {
 
 module.exports.log = function (username) {
     return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
+};
+
+module.exports.watchLog = function (username, notify) {
+    var watcher = fileWatch.watch(userDbPath(username, '/log.json')).on('change', function() {
+        var log = module.exports.log(username);
+        var lastLine = log.split('\n').slice(-1)[0];
+        if(lastLine === 'Backup completed!') {
+            return notify();
+        }
+        notify(lastLine);
+    });
+    watchers[username] = watcher;
+};
+
+module.exports.unwatchLog = function (username) {
+    watchers[username].unwatch(userDbPath(username, '/log.json'));
 };
 
 module.exports.infos = function (username) {
