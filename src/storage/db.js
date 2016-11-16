@@ -17,8 +17,7 @@ var dbPath = config.get('db:path');
 
 mkdirp(dbPath);
 
-var db = {},
-    watchers = [];
+var db = {};
 
 module.exports.load = function () {
     var ls = fs.readdirSync(dbPath);
@@ -42,24 +41,12 @@ module.exports.appendLog = function (username, message) {
     fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
 };
 
-module.exports.log = function (username) {
-    return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
+module.exports.resetLog = function (username) {
+    fs.writeFileSync(userDbPath(username, '/log.json'), "");
 };
 
-module.exports.watchLog = function (username, notify) {
-    var file = userDbPath(username, '/log.json');
-    fs.watchFile(file, function(curr, prev) {
-        // Modified case
-        if(curr.mtime !== prev.mtime) {
-            var log = module.exports.log(username);
-            var lastLine = log.split('\n').slice(-1)[0];
-            if(lastLine === 'Backup completed!') {
-                fs.unwatch(file);
-                return notify();
-            }
-            notify(lastLine);
-        }
-    });
+module.exports.log = function (username) {
+    return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
 };
 
 module.exports.infos = function (username) {
