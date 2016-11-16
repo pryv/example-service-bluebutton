@@ -17,6 +17,7 @@ router.post('/', function (req, res, next) {
       if(change) {
         res.write(change);
       } else {
+        db.unwatchLog(username);
         res.end();
       }
     });

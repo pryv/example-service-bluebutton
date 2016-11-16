@@ -11,9 +11,7 @@ var mkdirp = require('mkdirp'),
     fs = require('fs'),
     path = require('path'),
     rmdir = require('rmdir'),
-    async = require('async'),
-    fileWatch = require('chokidar');
-;
+    async = require('async');
 
 var dbPath = config.get('db:path');
 
@@ -44,28 +42,24 @@ module.exports.appendLog = function (username, message) {
     fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
 };
 
-module.exports.resetLog = function (username) {
-    fs.writeFileSync(userDbPath(username, '/log.json'), "");
-};
-
 module.exports.log = function (username) {
     return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
 };
 
 module.exports.watchLog = function (username, notify) {
-    var watcher = fileWatch.watch(userDbPath(username, '/log.json')).on('change', function() {
-        var log = module.exports.log(username);
-        var lastLine = log.split('\n').slice(-1)[0];
-        if(lastLine === 'Backup completed!') {
-            return notify();
+    var file = userDbPath(username, '/log.json');
+    fs.watchFile(file, function(curr, prev) {
+        // Modified case
+        if(curr.mtime !== prev.mtime) {
+            var log = module.exports.log(username);
+            var lastLine = log.split('\n').slice(-1)[0];
+            if(lastLine === 'Backup completed!') {
+                fs.unwatch(file);
+                return notify();
+            }
+            notify(lastLine);
         }
-        notify(lastLine);
     });
-    watchers[username] = watcher;
-};
-
-module.exports.unwatchLog = function (username) {
-    watchers[username].unwatch(userDbPath(username, '/log.json'));
 };
 
 module.exports.infos = function (username) {

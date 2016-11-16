@@ -26,12 +26,12 @@ describe('Storage', function () {
                 stepDone();
             },
             function updateToken(stepDone) {
-                db.save(credentials.username, 'token', dummyToken+1);
+                db.save(credentials.username, 'token', dummyToken + 1);
                 stepDone();
             },
             function verifyUpdated(stepDone) {
                 should.exists(db.infos(credentials.username));
-                should.equal(db.infos(credentials.username).token, dummyToken+1);
+                should.equal(db.infos(credentials.username).token, dummyToken + 1);
                 stepDone();
             },
             function clean(stepDone) {
@@ -49,7 +49,6 @@ describe('Storage', function () {
         async.series([
             function createInfo(stepDone) {
                 mkdirp(dbPath);
-                console.log(dbPath);
                 fs.writeFileSync(dbPath + '/infos.json', json);
                 should.equal(fs.readFileSync(dbPath + '/infos.json', 'utf-8'), json);
                 stepDone();
@@ -71,7 +70,6 @@ describe('Storage', function () {
     });
 
     it('should delete the user\'s info', function (done) {
-
         async.series([
             function saveInfo(stepDone) {
                 db.save(credentials.username, 'trash', "blabla");
@@ -81,30 +79,57 @@ describe('Storage', function () {
                 db.delete(credentials.username, stepDone);
             },
             function verifyDeleted(stepDone) {
-                should.equal(fs.existsSync(dbPath + credentials.username),false);
+                should.equal(fs.existsSync(dbPath + credentials.username), false);
                 should.not.exists(db.infos(credentials.username));
                 stepDone();
             }
         ], done);
     });
 
-    if('should append the log file for the specified user', function (done) {
-
+    it('should append the log file for the specified user and return its content', function (done) {
+        var message = 'coucou';
+        async.series([
+            function appendLog(stepDone) {
+                db.appendLog(credentials.username, message);
+                stepDone();
+            },
+            function verifyAppended(stepDone) {
+                should.equal(db.log(credentials.username), message + '\n');
+                stepDone();
+            },
+            function clean(stepDone) {
+                db.delete(credentials.username, stepDone);
+            }
+        ], done);
     });
 
-    if('should return the log content for the specified user', function (done) {
+    it('should watch and unwatch the log file for the specified user', function (done) {
+        var newLine = 'newline',
+            endLine = 'Backup completed!',
+            res = null;
 
+        async.series([
+            function setupWatch(stepDone) {
+                db.watchLog(credentials.username, function(change) {
+                    res = change;
+                });
+                stepDone();
+            },
+            function logNewLine(stepDone) {
+                db.appendLog(credentials.username, newLine);
+                var lastLine = db.log(credentials.username).split('\n').slice(-1)[0];
+                should.equal(res, lastLine);
+                stepDone();
+            },
+            function logEndLine(stepDone) {
+                db.appendLog(credentials.username, endLine);
+                should.not.exists(res);
+                stepDone();
+            },
+            function clean(stepDone) {
+                db.delete(credentials.username, stepDone);
+            }
+        ], done);
     });
 
-    if('should reset the log content for the specified user', function (done) {
-
-    });
-
-    if('should watch the log file for the specified user', function (done) {
-
-    });
-
-    if('should unwatch the log file for the specified user', function (done) {
-
-    });
 });
