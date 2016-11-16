@@ -64,6 +64,9 @@ function readStatus(username, token) {
     var str = xhr.responseText.substring(last_index, curr_index);
     last_index = curr_index;
     logToConsole(str);
+    if (str.lastLine() === 'Backup completed!') {
+      stateChange('complete');
+    }
   };
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(JSON.stringify({username: username, token: token}));
@@ -83,14 +86,20 @@ function stateChange(state) {
     case "login":
       $(".loginView").show();
       $(".consoleView").hide();
+      $(".downloadView").hide();
       $(".alert").hide();
       break;
     case "running":
       $(".loginView").hide();
       $(".consoleView").show();
+      $(".downloadView").hide();
       $(".alert").hide();
       break;
-    case "done":
+    case "complete":
+      $(".loginView").hide();
+      $(".consoleView").show();
+      $(".downloadView").show();
+      $(".alert").hide();
       break;
     default:
       // error
@@ -145,4 +154,10 @@ String.prototype.formatMessage = function (width) {
     }
   }
   return str;
+};
+
+String.prototype.lastLine = function () {
+  return this.split('\n').filter(function (elem) {
+    if (elem) { return elem; }
+  }).slice(-1)[0];
 };
