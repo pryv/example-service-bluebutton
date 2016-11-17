@@ -14,16 +14,16 @@ router.post('/', function (req, res, next) {
 
   // TODO: handle errors and completion
   if(db.infos(username).token === body.token) {
-    setTimeout(tick, 1000);
+    db.watchLog(username, function(chunk) {
+      if(chunk) {
+        res.write(chunk);
+      } else {
+        res.end('Finish');
+      }
+    });
   } else {
     res.end('Invalid credentials!');
   }
-
-  // TODO: use stream to update only when changes occur
-  function tick() {
-    res.write(db.log(username));
-  }
-
 });
 
 module.exports = router;

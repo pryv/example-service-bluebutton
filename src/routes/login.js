@@ -41,18 +41,19 @@ router.post('/', function (req, res, next) {
       return res.status(400).send(err);
     }
 
+    db.createLog(username);
+
     // Save token
     token = connection.auth;
     db.save(connection.username, 'token', token);
 
-    if(db.infos(username).idle) {
+    if(!db.infos(username).running) {
       // Start backup
       params.includeTrashed = body.includeTrashed;
       params.includeAttachments = body.includeAttachments;
       params.backupDirectory = backupDir;
-      db.resetLog(username);
       backup.startOnConnection(connection, params, backupComplete, log);
-      db.save(username, 'idle', false);
+      db.save(username, 'running', true);
     }
 
     res.status(200).send(token);
@@ -68,13 +69,13 @@ var backupComplete = function(err) {
   if(err) {
     return db.appendLog(username, err);
   }
-  var name = backupDir + token + '.zip';
-  zip(backupDir, name, function(err) {
+  var name = backupDir.baseDir + token + '.zip';
+  zip(backupDir.baseDir, name, function(err) {
     if(err) {
       db.appendLog(username, 'Zip creation error');
     }
     db.appendLog(username, 'Backup completed!');
-    db.save(username, 'idle', 'true');
+    db.save(username, 'running', false);
   });
 };
 

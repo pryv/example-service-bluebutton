@@ -17,7 +17,9 @@ var dbPath = config.get('db:path');
 
 mkdirp(dbPath);
 
-var db = {};
+var db = {},
+    writeStreams = [],
+    readStreams = [];
 
 module.exports.load = function () {
     var ls = fs.readdirSync(dbPath);
@@ -37,16 +39,35 @@ module.exports.save = function (username, key, value) {
     db[username] = infos;
 };
 
-module.exports.appendLog = function (username, message) {
-    fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
+module.exports.createLog = function (username) {
+    var log = userDbPath(username, '/log.json');
+    fs.openSync(log, 'w');
+    var readStream = fs.createReadStream(log);
+    readStream.setEncoding('utf8');
+    readStreams[username] = readStream;
+    var writeStream = fs.createWriteStream(log);
+    writeStreams[username] = writeStream;
 };
 
-module.exports.resetLog = function (username) {
-    fs.writeFileSync(userDbPath(username, '/log.json'), "");
+module.exports.watchLog = function (username, notify) {
+    writeStreams[username].on('data', function(chunk) {
+        notify(chunk);
+    });
 };
 
-module.exports.log = function (username) {
-    return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
+module.exports.appendLog = function (username, message, end) {
+    var stream = writeStreams[username];
+    message += '\n';
+    if(stream) {
+        if(end) {
+            stream.write(message);
+            stream.end();
+            stream = null;
+        } else {
+            stream.write(message);
+        }
+    }
+    // TODO: error handling
 };
 
 module.exports.infos = function (username) {

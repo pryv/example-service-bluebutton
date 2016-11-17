@@ -9,7 +9,6 @@ var should = require('should'),
 var db = require('../../src/storage/db');
 
 describe('Storage', function () {
-
     var credentials = require('../data/testUser.json');
     var dbPath = config.get('db:path') + credentials.username;
     var dummyToken = 'iamadummytoken';
@@ -42,7 +41,6 @@ describe('Storage', function () {
     });
 
     it('should load the user\'s info', function (done) {
-
         var userInfo = {info: "blabla"};
         var json = JSON.stringify(userInfo);
 
@@ -70,7 +68,6 @@ describe('Storage', function () {
     });
 
     it('should delete the user\'s info', function (done) {
-
         async.series([
             function saveInfo(stepDone) {
                 db.save(credentials.username, 'trash', "blabla");
@@ -80,12 +77,27 @@ describe('Storage', function () {
                 db.delete(credentials.username, stepDone);
             },
             function verifyDeleted(stepDone) {
-                should.equal(fs.existsSync(dbPath + credentials.username), false);
+                should.equal(fs.existsSync(dbPath), false);
                 should.not.exists(db.infos(credentials.username));
                 stepDone();
             }
         ], done);
     });
 
-    // TODO: Add log tests
+    it('should watch the log file of provided user', function(done) {
+        var message = 'coucou';
+        db.createLog(credentials.username, function(chunk) {
+            should.equal(chunk, message);
+            db.delete(credentials.username, done);
+        });
+        db.appendLog(credentials.username, message);
+    });
+
+    it('should append the log file of provided user with info message', function(done) {
+        var message = 'info';
+        db.appendLog(credentials.username, message);
+        var log = fs.readFileSync(dbPath + '/log.json');
+        should.equal(log, message);
+        db.delete(credentials.username, done);
+    });
 });
