@@ -71,6 +71,14 @@ body {
     box-shadow: inset 0px 0px 1px 0px #9b9b9b, 0px 0px 1px 0px #9b9b9b;
 }
 
+.choice input {
+    width: 15px;
+    height: 15px;
+    margin:0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+}
 .consoleView textarea {
     width: 97%;
     height: 15em;
