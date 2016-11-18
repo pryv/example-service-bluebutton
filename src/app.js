@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/login', require('./routes/login'));
 app.use('/status', require('./routes/status'));
 app.use('/delete', require('./routes/delete'));
+app.use('/download', require('./routes/download'));
 
 app.use('/', express.static(path.normalize(__dirname + '/../dist')));
 

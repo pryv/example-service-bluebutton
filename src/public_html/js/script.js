@@ -5,14 +5,17 @@ var $ = require("jquery"),
   func = require('./function');
 
 $(document).ready(function(){
-  display.changeWidth();
   func.stateChange('login');
-  $("#login").click(function(){
-    func.loginProcess();
-  });
+  display.changeWidth();
+  $(window).resize(display.changeWidth);
   $(document).keypress(function (key) {
     if (key.which === 13) { func.loginProcess(); }
     if (key.which === 0) { $(".alert").hide(); }
   });
-  $(window).resize(display.changeWidth);
+  $("#login").click(function(){
+    func.loginProcess();
+  });
+  $("#download").click(function(){
+    func.downloadBackup();
+  });
 });
