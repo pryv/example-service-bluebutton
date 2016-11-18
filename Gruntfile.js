@@ -15,7 +15,7 @@ module.exports = function (grunt) {
     // TODO: Only select files needed by the script
     browserify: {
       dist: {
-        src: ['./src/public_html/js/script.js'],
+        src: ['./src/public_html/js/*.js'],
         dest: 'dist/script-browserify.js',
         options: {
           alias: ['./src/public_html/js/script.js:script-browserify']
@@ -42,7 +42,7 @@ module.exports = function (grunt) {
     // TODO: Only select files needed by the script
     watch: {
       all: {
-        files: ['Gruntfile.js', 'src/**/*.*'],
+        files: ['Gruntfile.js', 'src/public_html/**/*.*'],
         tasks: ['default']
       }
     }
