@@ -3,6 +3,8 @@
 <head lang="en">
     <title>Pryv Service Backup</title>
     <link href="./style.css" rel="stylesheet" type="text/css"/>
+    <link href="./alert.css" rel="stylesheet" type="text/css"/>
+    <link href="./loginView.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="./script-browserify.js"></script>
 </head>
 
@@ -12,7 +14,7 @@
     <div class="main">
 
         <h1>
-            <img src="./icon-pryv.png"><img>
+            <img src="./img/icon-pryv.png"><img>
             Pryv Service Backup
         </h1>
 
@@ -20,11 +22,13 @@
             <div class="loginView">
                 <h2>Pryv Login</h2>
 
-                <div class="choice">
-                    <input type="checkbox" value="trashed" id="trashed">
-                    <label>Include trashed data ?</label><br>
-                    <input type="checkbox" value="attachment" id="attachment">
-                    <label>Include attachments ?</label><br>
+                <div class="include">
+                    <input type="checkbox" name="trashed" id="trashed" class="choice">
+                    <label for="trashed" class="choice-label">Include trashed data ?</label><br>
+                </div>
+                <div class="include">
+                    <input type="checkbox" name="attachment" id="attachment" class="choice">
+                    <label for="attachment" class="choice-label">Include attachments ?</label><br>
                 </div><br>
 
                 <label>Username :</label>
