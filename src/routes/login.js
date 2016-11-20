@@ -64,14 +64,14 @@ var log = function(message) {
 
 var backupComplete = function(err) {
   if(err) {
-    return db.appendLog(username, err);
+    return db.appendLog(username, err, true);
   }
   var name = backupDir.baseDir + token + '.zip';
   zip(backupDir.baseDir, name, function(err) {
     if(err) {
-      db.appendLog(username, 'Zip creation error');
+      db.appendLog(username, 'Zip creation error', true);
     }
-    db.appendLog(username, 'Backup completed!');
+    db.appendLog(username, 'Backup completed!', true);
     db.save(username, 'running', false);
   });
 };

@@ -38,15 +38,15 @@ module.exports.save = function (username, key, value) {
     db[username] = infos;
 };
 
-var log = function (username) {
+module.exports.log = function (username) {
     return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
 };
 
-module.exports.appendLog = function (username, message) {
+module.exports.appendLog = function (username, message, end) {
     fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
     var watcher = watchers[username];
     if(typeof watcher == 'function') {
-        watcher(message);
+        watcher(message, end);
     }
 };
 
