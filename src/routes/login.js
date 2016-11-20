@@ -41,8 +41,6 @@ router.post('/', function (req, res, next) {
       return res.status(400).send(err);
     }
 
-    db.createLog(username);
-
     // Save token
     token = connection.auth;
     db.save(connection.username, 'token', token);
@@ -64,7 +62,6 @@ var log = function(message) {
   db.appendLog(username, message);
 };
 
-// TODO: use streams for log in db and close stream when error or complete
 var backupComplete = function(err) {
   if(err) {
     return db.appendLog(username, err);

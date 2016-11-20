@@ -14,10 +14,12 @@ router.post('/', function (req, res, next) {
 
   // TODO: handle errors and completion
   if(db.infos(username).token === body.token) {
-    db.watchLog(username, function(chunk) {
-      if(chunk) {
-        res.write(chunk);
+    db.watchLog(username, function(log) {
+      console.log(log);
+      if(log) {
+        res.write(log);
       } else {
+        db.unwatchLog(username);
         res.end('Finish');
       }
     });
