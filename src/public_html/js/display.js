@@ -2,6 +2,30 @@
 
 var $ = require("jquery");
 
+module.exports.stateChange = function (state) {
+  switch(state){
+    case "login":
+      $(".loginView").show();
+      $(".consoleView").hide();
+      $(".downloadView").hide();
+      $(".alert").hide();
+      break;
+    case "running":
+      $(".loginView").hide();
+      $(".consoleView").show();
+      $(".downloadView").hide();
+      $(".alert").hide();
+      break;
+    case "complete":
+      $(".loginView").hide();
+      $(".consoleView").show();
+      $(".downloadView").show();
+      $(".alert").hide();
+      break;
+    default:
+  }
+};
+
 module.exports.logToConsole = function (str) {
   var prev = $("#console").text();
   if (prev) {

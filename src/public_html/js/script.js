@@ -5,7 +5,7 @@ var $ = require("jquery"),
   func = require('./function');
 
 $(document).ready(function(){
-  func.stateChange('login');
+  display.stateChange('login');
   display.changeWidth();
   $(window).resize(display.changeWidth);
   $(document).keypress(function (key) {

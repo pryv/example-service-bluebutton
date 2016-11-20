@@ -12,7 +12,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // TODO: Only select files needed by the script
     browserify: {
       dist: {
         src: ['./src/public_html/js/*.js'],
@@ -45,7 +44,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // TODO: Only select files needed by the script
     watch: {
       all: {
         files: ['Gruntfile.js', 'src/public_html/**/*.*'],

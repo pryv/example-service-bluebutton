@@ -4,9 +4,13 @@ Backup API service for Pryv
 
 ## Usage
 
-Prerequisites: *node* & *npm*
+Prerequisites: __*node*__ & __*npm*__
 
-* Install *grunt* globally `npm install grunt -g`
+Prepare the repository:
+* Install __*grunt*__ globally: `npm install grunt -g`
 * Install dependencies: `npm install`
-* Start API server: `npm start`
+* At the root of the repository, run: `grunt`
+
+Start API server:
+* At the root of the repository, run: `npm start`
 * Open the following link in a browser: https://l.rec.la:3443
