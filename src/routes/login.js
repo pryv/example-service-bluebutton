@@ -54,7 +54,7 @@ router.post('/', function (req, res, next) {
       db.save(username, 'running', true);
     }
 
-    res.status(200).send(token);
+    res.status(200).send({"token": token, "log": db.log(username)});
   });
 });
 

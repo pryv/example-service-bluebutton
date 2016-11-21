@@ -6,16 +6,18 @@ var express = require('express'),
     BackupDirectory = backup.Directory,
     fs = require('fs');
 
-router.post('/', function (req, res, next) {
+router.get('/', function (req, res, next) {
     var body = req.body,
         username = body.username,
         token = body.token;
     if(db.infos(username) && db.infos(username).token === token) {
         // TODO: get it from login?
         var backupDir = new BackupDirectory(username, config.get('pryv:domain'));
-        if(fs.existsSync(backupDir)) {
+        var file = backupDir.baseDir;
+        if(fs.existsSync(file)) {
             // TODO: append hostname for valid download link?
-            res.download(backupDir);
+            console.log('coucou');
+            res.download(file);
         } else {
             res.status(400).send('Inexisting backup file!');
         }
