@@ -70,15 +70,18 @@ var backupComplete = function(err) {
     return db.appendLog(username, err, true);
   }
   var hash = crypto.createHash('md5').update(token).digest("hex");
-  var path = 'download/' + hash + '.zip';
-  console.log(fs.existsSync(path));
-  zip(backupDir.baseDir, __dirname + '/../../' + path, function(err) {
+  var path = __dirname + '/../../download';
+  var file = hash + '.zip';
+  if (!fs.existsSync(path)){
+    fs.mkdirSync(path);
+  }
+  zip(backupDir.baseDir, path + '/' + file, function(err) {
     if(err) {
       db.appendLog(username, 'Zip creation error', true);
     }
     db.appendLog(username, 'Backup completed!');
-    db.appendLog(username, 'Download link: ' + path, true);
-    db.save(username, 'url', path);
+    db.appendLog(username, 'Backup file: ' + file, true);
+    db.save(username, 'url', file);
     db.save(username, 'running', false);
   });
 };
