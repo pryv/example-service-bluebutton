@@ -39,7 +39,11 @@ module.exports.save = function (username, key, value) {
 };
 
 module.exports.log = function (username) {
-    return fs.readFileSync(userDbPath(username, '/log.json'), 'utf-8');
+    var file = userDbPath(username, '/log.json');
+    if(!fs.accessSync(file)) {
+        fs.openSync(file);
+    }
+    return fs.readFileSync(file, 'utf-8');
 };
 
 module.exports.appendLog = function (username, message, end) {
