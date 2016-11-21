@@ -13,7 +13,15 @@ router.post('/', function (req, res, next) {
             if(err) {
                 res.status(500).send('Backup creation error!');
             } else {
-                res.status(200).send('Backup deleted');
+                var path = __dirname + '/../../download/';
+                fs.unlinkSync(path + db.infos(username).file);
+                db.delete(username, function (err) {
+                    if(err) {
+                        return res.status(500).send('User info deletion error!');
+                    }
+                    res.status(200).send('Backup deleted');
+
+                });
             }
         });
     } else {
