@@ -81,8 +81,7 @@ var backupComplete = function(err) {
     }
     db.appendLog(username, 'Backup completed!');
     db.appendLog(username, 'Backup file: ' + file, true);
-    db.save(username, 'url', file);
-    db.save(username, 'running', false);
+    db.save(username, 'file', file);
   });
 };
 
