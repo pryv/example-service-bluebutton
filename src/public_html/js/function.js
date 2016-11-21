@@ -43,15 +43,6 @@ module.exports.loginProcess = function() {
   username = $("#username").val();
   password = $("#password").val();
 
-  var trashed = false;
-  var attachments = false;
-
-  if ($("#trashed:checked").length === 1) {
-    trashed = true;
-  }
-  if ($("#attachment:checked").length === 1) {
-    attachments = true;
-  }
   if(username === '' || password === '') {
     display.colorError();
     display.alertDisplay("You must enter your username and password !");
@@ -59,7 +50,10 @@ module.exports.loginProcess = function() {
     $.ajax({
       url: "/login",
       type : 'POST',
-      data : { username: username, password: password, includeTrashed: trashed, includeAttachments: attachments },
+      data : { username: username,
+        password: password,
+        includeTrashed: $("#trashed:checked").length,
+        includeAttachments: $("#attachment:checked").length },
       success: function(res, textStatus, xhr) {
         if(xhr.status === 200) {
           $(function() {
