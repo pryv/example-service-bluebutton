@@ -50,7 +50,7 @@ module.exports.appendLog = function (username, message, end) {
     fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
     var watcher = watchers[username];
     if(typeof watcher == 'function') {
-        watcher(message, end);
+        watcher(message+'\n', end);
     }
 };
 
