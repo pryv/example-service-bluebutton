@@ -40,7 +40,7 @@ module.exports.save = function (username, key, value) {
 
 module.exports.log = function (username) {
     var file = userDbPath(username, '/log.json');
-    if(!fs.accessSync(file)) {
+    if(!fs.existsSync(file)) {
         fs.openSync(file, "w+");
     }
     return fs.readFileSync(file, 'utf-8');
