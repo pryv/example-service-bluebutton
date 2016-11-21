@@ -7,19 +7,29 @@ module.exports.stateChange = function (state) {
     case "login":
       $(".loginView").show();
       $(".consoleView").hide();
-      $(".downloadView").hide();
+      $(".backupView").hide();
+      $(".doneView").hide();
       $(".alert").hide();
       break;
     case "running":
       $(".loginView").hide();
       $(".consoleView").show();
-      $(".downloadView").hide();
+      $(".backupView").hide();
+      $(".doneView").hide();
       $(".alert").hide();
       break;
     case "complete":
       $(".loginView").hide();
       $(".consoleView").show();
-      $(".downloadView").show();
+      $(".backupView").show();
+      $(".doneView").hide();
+      $(".alert").hide();
+      break;
+    case "done":
+      $(".loginView").hide();
+      $(".consoleView").hide();
+      $(".backupView").hide();
+      $(".doneView").show();
       $(".alert").hide();
       break;
     default:

@@ -15,7 +15,10 @@ $(document).ready(function(){
   $("#login").click(function(){
     func.loginProcess();
   });
-  $("#download").click(function(){
-    func.downloadBackup();
+  $("#delete").click(function() {
+    func.deleteBackup();
+  });
+  $("#refresh").click(function() {
+    history.go(0)
   });
 });

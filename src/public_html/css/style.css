@@ -20,6 +20,13 @@ body {
     display: table;
 }
 
+.container {
+    padding: 30px 60px 48px 60px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    background-color: #eeeeee;
+}
+
 .main {
     position: relative;
     margin: 1.5rem 0.7rem;
@@ -37,14 +44,13 @@ body {
     vertical-align: text-top;
 }
 
-.container {
-    padding: 30px 60px 48px 60px;
-    border-radius: 6px;
-    margin-bottom: 30px;
-    background-color: #eeeeee;
-}
-
 .consoleView textarea {
     width: 97%;
     height: 15em;
+}
+
+.backupDiv {
+    display: inline-block;
+    margin: 10px;
+    width: 295px;
 }

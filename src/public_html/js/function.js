@@ -9,7 +9,7 @@ var last_index = 0,
   password = '',
   token = '';
 
-function readStatus(username, token) {
+function readStatus(username) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/status', true);
 
@@ -18,42 +18,23 @@ function readStatus(username, token) {
     if (last_index == curr_index) return;
     var str = xhr.responseText.substring(last_index, curr_index);
     last_index = curr_index;
-    display.logToConsole(str);
-    if (str.lastLine() === 'Backup completed!') {
-      display.stateChange('complete');
-    }
+    backupComplete(str);
   };
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(JSON.stringify({username: username, token: token}));
 }
 
-module.exports.downloadBackup = function() {
-
-  console.log(username, password, token);
-
-  $.ajax({
-    url: "/download",
-    type : 'GET',
-    data : {username: username, token: token},
-    success: function(res, textStatus, xhr) {
-      //TODO receive backup directory
-      console.log(res);
-      if(xhr.status === 200) {
-        $(function() {
-          //...
-        });
-      }
-    },
-    error: function(err){
-      display.colorError();
-      if(err.responseJSON) {
-        display.alertDisplay(err.responseJSON.message);
-      } else{
-        display.alertDisplay(err.responseText);
-      }
-    }
-  });
-};
+function backupComplete(str) {
+  display.logToConsole(str);
+  var lastLine = str.split('\n').filter(function (elem) {
+    if (elem) { return elem; }
+  }).slice(-1)[0];
+  if (lastLine.substring(0, 13) === 'Backup file: ') {
+    var backup = '/download/' + lastLine.substring(13, str.length);
+    display.stateChange('complete');
+    $('form').get(0).setAttribute('action', backup);
+  }
+}
 
 // TODO handle re-connection with include and attachment param difference
 module.exports.loginProcess = function() {
@@ -84,8 +65,10 @@ module.exports.loginProcess = function() {
           $(function() {
             token = res.token;
             display.stateChange('running');
-            if (res.log) { display.logToConsole(res.log); }
-            readStatus(username, token);
+            if (res.log) {
+              backupComplete(res.log);
+            }
+            readStatus(username);
           });
         }
       },
@@ -101,8 +84,23 @@ module.exports.loginProcess = function() {
   }
 };
 
-String.prototype.lastLine = function () {
-  return this.split('\n').filter(function (elem) {
-    if (elem) { return elem; }
-  }).slice(-1)[0];
+module.exports.deleteBackup = function () {
+  $.ajax({
+    url: "/delete",
+    type : 'POST',
+    data : { username: username, token: token},
+    success: function(res, textStatus, xhr) {
+      if(xhr.status === 200) {
+        display.stateChange('done');
+      }
+    },
+    error: function(err){
+      display.colorError();
+      if(err.responseJSON) {
+        display.alertDisplay(err.responseJSON.message);
+      } else{
+        display.alertDisplay(err.responseText);
+      }
+    }
+  });
 };

@@ -44,9 +44,23 @@
                 <textarea id="console" cols="80" rows="10" value=""></textarea>
             </div>
 
-            <div class="downloadView">
-                <h2>Download your Pryv</h2>
-                <button id="download">Download</button>
+            <div class="backupView">
+                <div class="backupDiv">
+                    <h2>Download Backup File</h2>
+                    <form method="get" action="">
+                        <button id="download">Download</button>
+                    </form>
+                </div>
+                <div class="backupDiv">
+                    <h2>Delete Backup File</h2>
+                    <button id="delete">Delete</button>
+                </div>
+            </div>
+
+            <div class="doneView">
+                <p>Your backup has successfully been deleted.</p>
+                <p>You can refresh this page to start another backup.</p>
+                <button id="refresh">Refresh</button>
             </div>
         </div>
 

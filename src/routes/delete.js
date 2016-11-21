@@ -1,9 +1,10 @@
 var express = require('express'),
     router = express.Router(),
     config = require('../config'),
-    db = require('../../src/storage/db');
-    backup = require('backup-node'),
-    BackupDirectory = backup.Directory;
+    db = require('../../src/storage/db'),
+  backup = require('backup-node'),
+  fs = require('fs'),
+  BackupDirectory = backup.Directory;
 
 router.post('/', function (req, res, next) {
     var body = req.body,
@@ -11,8 +12,9 @@ router.post('/', function (req, res, next) {
     if(db.infos(username) && db.infos(username).token === body.token) {
         new BackupDirectory(username, config.get('pryv:domain')).deleteDirs(function(err) {
             if(err) {
-                res.status(500).send('Backup creation error!');
+                res.status(500).send('Backup deletion error!');
             } else {
+                // TODO set path in db
                 var path = __dirname + '/../../download/';
                 fs.unlinkSync(path + db.infos(username).file);
                 db.delete(username, function (err) {
