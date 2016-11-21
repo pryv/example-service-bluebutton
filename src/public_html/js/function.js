@@ -1,6 +1,7 @@
 /* global module, require */
 
 var $ = require("jquery"),
+  fs = require('fs'),
   display = require('./display');
 
 var last_index = 0,
@@ -32,7 +33,7 @@ module.exports.downloadBackup = function() {
 
   $.ajax({
     url: "/download",
-    type : 'POST',
+    type : 'GET',
     data : {username: username, token: token},
     success: function(res, textStatus, xhr) {
       //TODO receive backup directory
@@ -81,8 +82,9 @@ module.exports.loginProcess = function() {
       success: function(res, textStatus, xhr) {
         if(xhr.status === 200) {
           $(function() {
-            token = res;
+            token = res.token;
             display.stateChange('running');
+            if (res.log) { display.logToConsole(res.log); }
             readStatus(username, token);
           });
         }
