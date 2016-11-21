@@ -50,9 +50,11 @@ router.post('/', function (req, res, next) {
 
     if(!db.infos(username).running) {
       // Start backup
-      params.includeTrashed = body.includeTrashed;
-      params.includeAttachments = body.includeAttachments;
-      params.backupDirectory = backupDir;
+      var params = {
+        "backupDirectory" : backupDir,
+        "includeAttachments" : body.includeAttachments,
+        "includeTrashed" : body.includeTrashed
+      };
       backup.startOnConnection(connection, params, backupComplete, log);
       db.save(username, 'running', true);
     }
