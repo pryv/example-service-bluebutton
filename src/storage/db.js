@@ -41,9 +41,7 @@ module.exports.load = function () {
 module.exports.save = function (username, key, value) {
     infosCache[username] = infosCache[username] || {};
     infosCache[username][key] = value;
-    console.log('info', infosCache[username]);
     fs.writeFileSync(userDbPath(username, '/infos.json'), JSON.stringify(infosCache[username]));
-    console.log('post infosCache.username', infosCache[username]);
 };
 
 /**

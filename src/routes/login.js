@@ -49,8 +49,8 @@ router.post('/', function (req, res, next) {
       // Start backup
       var params = {
         "backupDirectory" : backupDir,
-        "includeAttachments" : body.includeAttachments,
-        "includeTrashed" : body.includeTrashed
+        "includeAttachments" : (body.includeAttachments != 0),
+        "includeTrashed" : (body.includeTrashed != 0)
       };
       backup.startOnConnection(connection, params, backupComplete.bind(this, null, username), function (message) {
         db.appendLog(username, message);
