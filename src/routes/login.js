@@ -6,7 +6,10 @@ var express = require('express'),
     backup = require('backup-node'),
     BackupDirectory = backup.Directory,
     config = require('../config'),
-    zip = require('zip-folder');
+    zip = require('zip-folder'),
+    crypto = require('crypto'),
+    fs = require('fs');
+
 
 // TODO: What if multiple parallel backups?
 var token = null,
@@ -66,12 +69,16 @@ var backupComplete = function(err) {
   if(err) {
     return db.appendLog(username, err, true);
   }
-  var name = backupDir.baseDir + token + '.zip';
-  zip(backupDir.baseDir, name, function(err) {
+  var hash = crypto.createHash('md5').update(token).digest("hex");
+  var path = 'download/' + hash + '.zip';
+  console.log(fs.existsSync(path));
+  zip(backupDir.baseDir, __dirname + '/../../' + path, function(err) {
     if(err) {
       db.appendLog(username, 'Zip creation error', true);
     }
-    db.appendLog(username, 'Backup completed!', true);
+    db.appendLog(username, 'Backup completed!');
+    db.appendLog(username, 'Download link: ' + path, true);
+    db.save(username, 'url', path);
     db.save(username, 'running', false);
   });
 };
