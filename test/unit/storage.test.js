@@ -23,7 +23,7 @@ describe('Storage', function () {
 
         async.series([
             function createInfo(stepDone) {
-                mkdirp(dbPath);
+                mkdirp.sync(dbPath);
                 fs.writeFileSync(dbPath + '/infos.json', json);
                 should.equal(fs.readFileSync(dbPath + '/infos.json', 'utf-8'), json);
                 stepDone();
@@ -87,7 +87,7 @@ describe('Storage', function () {
 
         async.series([
             function createLog(stepDone) {
-                mkdirp(dbPath);
+                mkdirp.sync(dbPath);
                 fs.open(dbPath + '/log.json', 'w+', stepDone);
             },
             function appendLog(stepDone) {
