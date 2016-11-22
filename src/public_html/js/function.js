@@ -20,6 +20,9 @@ function readStatus(username) {
     last_index = curr_index;
     backupComplete(str);
   };
+  xhr.onerror = function () {
+    alert('coucou');
+  }
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(JSON.stringify({username: username, token: token}));
 }

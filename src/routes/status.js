@@ -17,7 +17,7 @@ router.post('/', function (req, res, next) {
       res.write(log);
       if(end) {
         db.unwatchLog(username);
-        res.end();
+        res.end('END');
       }
     });
   } else {
