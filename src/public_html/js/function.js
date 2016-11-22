@@ -96,7 +96,7 @@ function checkLog(str) {
     }
   } else if (lastLines.length === 2 && lastLines[1].substring(0, 13) === 'Backup file: '){
     display.logToConsole(str);
-    backupComplete(lastLines[0].substring(13, str.length));
+    backupComplete(lastLines[1].substring(13, str.length));
   } else {
     display.logToConsole(str);
   }
