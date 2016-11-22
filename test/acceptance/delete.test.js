@@ -3,9 +3,7 @@ var request = require('superagent'),
     should = require('should'),
     config = require('../../src/config'),
     db = require('../../src/storage/db'),
-    BackupDirectory = require('backup-node').Directory,
-    async = require('async'),
-    fs = require('fs');
+    async = require('async');
 
 require('../../src/server');
 
@@ -14,14 +12,12 @@ require('readyness/wait/mocha');
 var serverBasePath = 'https://' + config.get('http:hostname') + ':' + config.get('http:port');
 
 describe("Delete", function () {
-
     var credentials = {
         username: "validuser",
         token : "validtoken"
     };
 
-    it('should delete user backup with valid credentials', function (done) {
-        var backupDir = null;
+    it('should be successful when trying to delete user backup with valid credentials', function (done) {
         async.series([
             function saveToken(stepDone) {
                 db.save(credentials.username, 'token', credentials.token);
@@ -29,49 +25,22 @@ describe("Delete", function () {
                 should.exists(db.infos(credentials.username).token);
                 stepDone();
             },
-            function createBackup(stepDone) {
-                backupDir = new BackupDirectory(credentials.username, config.get('pryv:domain'));
-                backupDir.createDirs(function(err) {
-                    if(err) {
-                        return stepDone(err);
-                    }
-                    should.equal(fs.existsSync(backupDir.baseDir), true);
-                    stepDone();
-                });
-            },
             function deleteRequest(stepDone) {
                 request.post(serverBasePath + '/delete').send(credentials).set('Content-type','application/json').end(function (err, res) {
                     should.not.exists(err);
                     res.status.should.eql(200);
-                    should.equal(fs.existsSync(backupDir.baseDir), false);
-                    db.delete(credentials.username, stepDone);
+                    stepDone();
                 });
             }
         ], done);
     });
 
-    it('should delete user backup with valid credentials', function (done) {
-        var backupDir = null;
-        async.series([
-            function createBackup(stepDone) {
-                backupDir = new BackupDirectory(credentials.username, config.get('pryv:domain'));
-                backupDir.createDirs(function(err) {
-                    if(err) {
-                        return stepDone(err);
-                    }
-                    should.equal(fs.existsSync(backupDir.baseDir), true);
-                    stepDone();
-                });
-            },
-            function deleteRequest(stepDone) {
-                request.post(serverBasePath + '/delete').send(credentials).set('Content-type','application/json').end(function (err, res) {
-                    should.exists(err);
-                    res.status.should.not.eql(200);
-                    should.equal(fs.existsSync(backupDir.baseDir), true);
-                    backupDir.deleteDirs(stepDone);
-                });
-            }
-        ], done);
+    it('should send an error when trying to delete user backup with invalid credentials', function (done) {
+        request.post(serverBasePath + '/delete').send(credentials).set('Content-type','application/json').end(function (err, res) {
+            should.exists(err);
+            res.status.should.not.eql(200);
+            done();
+        });
     });
 
 });

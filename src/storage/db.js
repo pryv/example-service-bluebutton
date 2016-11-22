@@ -112,20 +112,33 @@ module.exports.infos = function (username) {
 module.exports.deleteBackup = function (username, callback) {
     async.series([
         function removeInfos(stepDone) {
-            rmdir(dbPath + username, stepDone);
+            if(fs.existsSync(dbPath + username)) {
+                return rmdir(dbPath + username, stepDone);
+            } else {
+                stepDone();
+            }
         },
         function removeInfosCache(stepDone) {
-            delete infosCache[username];
+            if(infosCache[username]) {
+                delete infosCache[username];
+            }
             stepDone();
         },
         function removeData(stepDone) {
             module.exports.backupDir(username).deleteDirs(stepDone);
         },
         function removeZip(stepDone) {
-            fs.unlink(zipPath + '/' + zipFiles[username], stepDone);
+            var zip = zipPath + '/' + zipFiles[username];
+            if(zipFiles[username] && fs.existsSync(zip)) {
+                fs.unlink(zip, stepDone);
+            } else {
+                stepDone();
+            }
         },
         function removeZipCache(stepDone){
-            delete zipFiles[username];
+            if(zipFiles[username]) {
+                delete zipFiles[username];
+            }
             stepDone();
         }
     ], callback);
