@@ -1,18 +1,8 @@
 var express = require('express'),
     router = express.Router(),
-    pryv = require('pryv'),
     db = require('../storage/db'),
-    util = require('util'),
-    backup = require('backup-node'),
-    BackupDirectory = backup.Directory,
     config = require('../config'),
-    zip = require('zip-folder'),
-    crypto = require('crypto'),
-    fs = require('fs');
-
-
-// TODO: What if multiple parallel backups?
-var backupDir = null;
+    backup = require('backup-node');
 
 router.post('/', function (req, res, next) {
 
@@ -34,8 +24,6 @@ router.post('/', function (req, res, next) {
     "domain": config.get('pryv:domain')
   };
 
-  backupDir = new BackupDirectory(username, params.domain);
-
   backup.signInToPryv(params, function(err, connection) {
     if(err) {
       return res.status(400).send(err);
@@ -48,7 +36,7 @@ router.post('/', function (req, res, next) {
     if(!db.infos(username).running) {
       // Start backup
       var params = {
-        "backupDirectory" : backupDir,
+        "backupDirectory" : db.backupDir(username),
         "includeAttachments" : (body.includeAttachments != 0),
         "includeTrashed" : (body.includeTrashed != 0)
       };
@@ -66,20 +54,7 @@ var backupComplete = function(err, username) {
   if(err) {
     return db.appendLog(username, err, true);
   }
-  var hash = crypto.createHash('md5').update(token).digest("hex");
-  var path = __dirname + '/../../download';
-  var file = hash + '.zip';
-  if (!fs.existsSync(path)){
-    fs.mkdirSync(path);
-  }
-  zip(backupDir.baseDir, path + '/' + file, function(err) {
-    if(err) {
-      db.appendLog(username, 'Zip creation error', true);
-    }
-    db.appendLog(username, 'Backup completed!');
-    db.appendLog(username, 'Backup file: ' + file, true);
-    db.save(username, 'file', file);
-  });
+  db.createZip(username);
 };
 
 module.exports = router;

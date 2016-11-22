@@ -11,7 +11,7 @@ router.post('/', function (req, res, next) {
 
   var body = req.body,
       username = body.username;
-  // TODO: handle errors and completion
+
   if(db.infos(username).token === body.token) {
     db.watchLog(username, function(log, end) {
       res.write(log);
