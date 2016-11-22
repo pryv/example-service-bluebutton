@@ -8,7 +8,6 @@ var last_index = 0,
   password = '',
   token = '';
 
-// TODO handle re-connection with include and attachment param difference
 module.exports.loginProcess = function() {
   if ($('.loginView').is(':visible') === false) { return; }
 

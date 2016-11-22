@@ -4,7 +4,7 @@
   "description": "Web service for clients to download all their data",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "grunt; node src/server.js",
     "test": "mocha test/**/*.test.js"
   },
   "repository": {
