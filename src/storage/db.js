@@ -18,7 +18,7 @@ var mkdirp = require('mkdirp'),
     BackupDirectory = backup.Directory;
 
 var dbPath = config.get('db:path'),
-    zipPath = __dirname + '/../../download';
+    zipPath = path.normalize(__dirname + '/../../download');
 
 mkdirp(dbPath);
 
@@ -123,6 +123,10 @@ module.exports.deleteBackup = function (username, callback) {
         },
         function removeZip(stepDone) {
             fs.unlink(zipPath + '/' + zipFiles[username], stepDone);
+        },
+        function removeZipCache(stepDone){
+            delete zipFiles[username];
+            stepDone();
         }
     ], callback);
 };
@@ -141,9 +145,9 @@ module.exports.createZip = function (username) {
                 // TODO: check this case
             });
         }
+        zipFiles[username] = file;
         module.exports.appendLog(username, 'Backup completed!');
         module.exports.appendLog(username, 'Backup file: ' + file, true);
-        zipFiles[username] = file;
     });
 };
 
