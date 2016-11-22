@@ -109,28 +109,22 @@ module.exports.infos = function (username) {
     return infosCache[username];
 };
 
-module.exports.delete = function (username, callback) {
+module.exports.deleteBackup = function (username, callback) {
     async.series([
-        function removeOnDisk(stepDone) {
+        function removeInfos(stepDone) {
             rmdir(dbPath + username, stepDone);
         },
-        function removeOnDb(stepDone) {
+        function removeInfosCache(stepDone) {
             delete infosCache[username];
             stepDone();
+        },
+        function removeData(stepDone) {
+            module.exports.backupDir(username).deleteDirs(stepDone);
+        },
+        function removeZip(stepDone) {
+            fs.unlink(zipPath + '/' + zipFiles[username], stepDone);
         }
     ], callback);
-};
-
-module.exports.deleteBackup = function (username, callback) {
-    module.exports.backupDir(username).deleteDirs(function (err) {
-        if (err) {
-            return callback(err);
-        }
-        fs.unlinkSync(zipPath + '/' + zipFiles[username]);
-        module.exports.delete(username, function (err) {
-            callback(err);
-        });
-    });
 };
 
 module.exports.createZip = function (username) {
