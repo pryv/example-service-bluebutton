@@ -14,19 +14,13 @@ module.exports.stateChange = function (state) {
     case "running":
       $(".loginView").hide();
       $(".consoleView").show();
-      $(".backupView").hide();
-      $(".doneView").hide();
       $(".alert").hide();
       break;
     case "complete":
-      $(".loginView").hide();
-      $(".consoleView").show();
       $(".backupView").show();
-      $(".doneView").hide();
       $(".alert").hide();
       break;
     case "done":
-      $(".loginView").hide();
       $(".consoleView").hide();
       $(".backupView").hide();
       $(".doneView").show();
