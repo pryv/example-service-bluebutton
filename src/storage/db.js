@@ -143,6 +143,9 @@ module.exports.createZip = function (username) {
     zip(module.exports.backupDir(username).baseDir, zipPath + '/' + file, function (err) {
         if (err) {
             module.exports.appendLog(username, 'Zip creation error', true);
+            module.exports.deleteBackup(username, function(err) {
+                // TODO: check this case
+            });
         }
         module.exports.appendLog(username, 'Backup completed!');
         module.exports.appendLog(username, 'Backup file: ' + file, true);
