@@ -144,7 +144,7 @@ module.exports.deleteBackup = function (username, callback) {
     ], callback);
 };
 
-module.exports.createZip = function (username) {
+module.exports.createZip = function (username, callback) {
     var token = module.exports.infos(username).token;
     var hash = crypto.createHash('md5').update(token).digest('hex');
     var file = hash + '.zip';
@@ -152,15 +152,11 @@ module.exports.createZip = function (username) {
         fs.mkdirSync(zipPath);
     }
     zip(module.exports.backupDir(username).baseDir, zipPath + '/' + file, function (err) {
-        if (err) {
-            module.exports.appendLog(username, 'Zip creation error', true);
-            module.exports.deleteBackup(username, function() {
-                // TODO: check this case
-            });
+        if(err) {
+            return callback(err);
         }
         zipFiles[username] = file;
-        module.exports.appendLog(username, 'Backup completed!');
-        module.exports.appendLog(username, 'Backup file: ' + file, true);
+        callback(null, file);
     });
 };
 

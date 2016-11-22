@@ -56,12 +56,20 @@ router.post('/', function (req, res, next) {
 var backupComplete = function(err, username) {
   if(err) {
     db.appendLog(username, err, true);
-    db.deleteBackup(username, function() {
-      // TODO: check this case
-      return;
+    db.deleteBackup(username, function(err) {
+      return console.log(err);
     });
   }
-  db.createZip(username);
+  db.createZip(username, function(err, file) {
+    if (err) {
+      db.appendLog(username, 'Zip creation error', true);
+      db.deleteBackup(username, function(err) {
+        return console.log(err);
+      });
+    }
+    db.appendLog(username, 'Backup completed!');
+    db.appendLog(username, 'Backup file: ' + file, true);
+  });
 };
 
 module.exports = router;

@@ -36,7 +36,7 @@ describe('Backup', function () {
         var endString = 'Backup file: ';
         should.equal((message.indexOf(endString) > -1), true);
         var zip = message.replace(endString, "").replace('\n',"");
-        var zipPath = path.normalize(__dirname + '../../../download/' + zip);
+        var zipPath = path.normalize(__dirname + '/../../download/' + zip);
         should.equal(fs.existsSync(zipPath), true);
         db.deleteBackup(testUser.username, done);
       }
