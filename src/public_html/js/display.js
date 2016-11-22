@@ -37,11 +37,9 @@ module.exports.stateChange = function (state) {
 };
 
 module.exports.logToConsole = function (str) {
-  var prev = $("#console").text();
-  if (prev) {
-    $("#console").text(prev + '\n' + str);
-  } else {
-    $("#console").text(str);
+  $("#console").append(str);
+  if($("#console").length) {
+    $("#console").scrollTop($("#console")[0].scrollHeight - $("#console").height());
   }
 };
 
