@@ -3,9 +3,8 @@ var express = require('express'),
 
 var db = require('../storage/db');
 
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
   res.writeHead(200, { 'Content-Type': 'application/octet-stream',
-    'Content-Type': 'text/html; charset=utf-8',
     'Transfer-Encoding': 'chunked'
   });
 

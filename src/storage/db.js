@@ -60,7 +60,7 @@ module.exports.save = function (username, key, value) {
 module.exports.log = function (username) {
     var file = userDbPath(username, '/log.json');
     if (!fs.existsSync(file)) {
-        fs.openSync(file, "w+");
+        fs.openSync(file, 'w+');
     }
     return fs.readFileSync(file, 'utf-8');
 };
@@ -75,7 +75,7 @@ module.exports.log = function (username) {
 module.exports.appendLog = function (username, message, end) {
     fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
     var watcher = watchers[username];
-    if (typeof watcher == 'function') {
+    if (typeof watcher === 'function') {
         watcher(message + '\n', end);
     }
 };
@@ -129,7 +129,7 @@ module.exports.deleteBackup = function (username, callback) {
 
 module.exports.createZip = function (username) {
     var token = module.exports.infos(username).token;
-    var hash = crypto.createHash('md5').update(token).digest("hex");
+    var hash = crypto.createHash('md5').update(token).digest('hex');
     var file = hash + '.zip';
     if (!fs.existsSync(zipPath)) {
         fs.mkdirSync(zipPath);
@@ -137,7 +137,7 @@ module.exports.createZip = function (username) {
     zip(module.exports.backupDir(username).baseDir, zipPath + '/' + file, function (err) {
         if (err) {
             module.exports.appendLog(username, 'Zip creation error', true);
-            module.exports.deleteBackup(username, function(err) {
+            module.exports.deleteBackup(username, function() {
                 // TODO: check this case
             });
         }

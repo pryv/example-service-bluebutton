@@ -20,9 +20,9 @@ router.post('/', function (req, res, next) {
   }
 
   var params = {
-    "username": username,
-    "password": password,
-    "domain": config.get('pryv:domain')
+    'username': username,
+    'password': password,
+    'domain': config.get('pryv:domain')
   };
 
   backup.signInToPryv(params, function(err, connection) {
@@ -31,28 +31,32 @@ router.post('/', function (req, res, next) {
     }
 
     // Save token
-    token = connection.auth;
+    var token = connection.auth;
     db.save(connection.username, 'token', token);
 
     if(!db.infos(username).running) {
       // Start backup
       var params = {
-        "backupDirectory" : db.backupDir(username),
-        "includeAttachments" : (body.includeAttachments != 0),
-        "includeTrashed" : (body.includeTrashed != 0)
+        'backupDirectory' : db.backupDir(username),
+        /* jshint ignore:start */
+        'includeAttachments' : (body.includeAttachments != 0),
+        'includeTrashed' : (body.includeTrashed != 0)
+        /* jshint ignore:end */
       };
-      backup.startOnConnection(connection, params, _.bind(backupComplete, null, _, username), _.bind(db.appendLog, null, username));
+      backup.startOnConnection(connection, params,
+        _.bind(backupComplete, null, _, username),
+        _.bind(db.appendLog, null, username));
       db.save(username, 'running', true);
     }
 
-    res.status(200).send({"token": token, "log": db.log(username)});
+    res.status(200).send({'token': token, 'log': db.log(username)});
   });
 });
 
 var backupComplete = function(err, username) {
   if(err) {
     db.appendLog(username, err, true);
-    db.deleteBackup(username, function(err) {
+    db.deleteBackup(username, function() {
       // TODO: check this case
       return;
     });

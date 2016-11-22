@@ -15,10 +15,10 @@ if (typeof(nconf.get('config')) !== 'undefined') {
 
 if (fs.existsSync(configFile)) {
   configFile = fs.realpathSync(configFile);
-  logger.info('using custom config file: ' + configFile);
+  console.log('Using custom config file: ' + configFile);
 } else {
   if (configFile) {
-    logger.error('Cannot find custom config file: ' + configFile);
+    console.log('Cannot find custom config file: ' + configFile);
   }
 }
 

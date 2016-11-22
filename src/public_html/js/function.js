@@ -1,7 +1,6 @@
 /* global module, require */
 
-var $ = require("jquery"),
-  fs = require('fs'),
+var $ = require('jquery'),
   display = require('./display');
 
 var last_index = 0,
@@ -11,21 +10,21 @@ var last_index = 0,
 
 // TODO handle re-connection with include and attachment param difference
 module.exports.loginProcess = function() {
-  if ($(".loginView").is(":visible") === false) { return; }
+  if ($('.loginView').is(':visible') === false) { return; }
 
-  username = $("#username").val();
-  password = $("#password").val();
+  username = $('#username').val();
+  password = $('#password').val();
 
   if(username === '' || password === '') {
     display.colorError();
-    display.alertDisplay("You must enter your username and password !");
+    display.alertDisplay('You must enter your username and password !');
   } else {
     var data = { username: username,
       password: password,
-      includeTrashed: $("#trashed:checked").length,
-      includeAttachments: $("#attachment:checked").length };
+      includeTrashed: $('#trashed:checked').length,
+      includeAttachments: $('#attachment:checked').length };
 
-    ajaxPost("/login", data, function (res) {
+    ajaxPost('/login', data, function (res) {
       if (res) {
         token = res.token;
         display.stateChange('running');
@@ -39,7 +38,7 @@ module.exports.loginProcess = function() {
 };
 
 module.exports.deleteBackup = function () {
-  ajaxPost("/delete", { username: username, token: token}, function (res) {
+  ajaxPost('/delete', { username: username, token: token}, function (res) {
     if (res) {
       display.stateChange('done');
     }
@@ -53,7 +52,7 @@ function ajaxPost (url, data, callback) {
     data : data,
     success: function(res, textStatus, xhr) {
       if(xhr.status === 200) {
-        callback(res)
+        callback(res);
       }
     },
     error: function(err){
@@ -73,18 +72,16 @@ function readStatus(username) {
   xhr.open('POST', '/status', true);
   xhr.onprogress = function () {
     var curr_index = xhr.responseText.length;
-    if (last_index === curr_index) return;
+    if (last_index === curr_index) { return; }
     var str = xhr.responseText.substring(last_index, curr_index);
     last_index = curr_index;
     checkLog(str);
   };
-  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.send(JSON.stringify({username: username, token: token}));
 }
 
 function checkLog(str) {
-
-  console.log('str', str);
 
   var lastLines = str.split('\n').filter(function (elem) {
     if (elem) { return elem; }
@@ -96,7 +93,7 @@ function checkLog(str) {
       backupComplete(lastLines[0].substring(13, str.length));
     } else {
       display.stateChange('done');
-      $("#doneMessage").text('An error occurred during the backup, please try again.');
+      $('#doneMessage').text('An error occurred during the backup, please try again.');
     }
   } else if (lastLines.length === 2 && lastLines[1].substring(0, 13) === 'Backup file: '){
     display.logToConsole(str);

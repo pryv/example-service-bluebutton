@@ -1,3 +1,7 @@
+.checkboxDiv {
+    padding-bottom: 10px;
+}
+
 /**
  * Manage input style for username and password
  */
@@ -51,13 +55,4 @@
 }
 .loginView label.choice-label {
     background-image:url('./img/checkboxStyle.png');
-}
-
-
-/**
- * Separate checkbox
- */
-
-.include {
-    padding-bottom: 10px;
 }

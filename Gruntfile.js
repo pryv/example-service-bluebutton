@@ -57,8 +57,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  // TODO: Enable JSHINT
-  // grunt.registerTask('default', ['jshint', 'browserify', 'copy']);
-
-  grunt.registerTask('default', ['browserify', 'copy']);
+  grunt.registerTask('default', ['jshint', 'browserify', 'copy']);
 };

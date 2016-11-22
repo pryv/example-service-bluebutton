@@ -2,7 +2,7 @@ var express = require('express'),
     router = express.Router(),
     db = require('../../src/storage/db');
 
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
     var body = req.body,
         username = body.username;
     if(db.infos(username) && db.infos(username).token === body.token) {
