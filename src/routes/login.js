@@ -2,7 +2,8 @@ var express = require('express'),
     router = express.Router(),
     db = require('../storage/db'),
     config = require('../config'),
-    backup = require('backup-node');
+    backup = require('backup-node'),
+    _ = require('lodash');
 
 router.post('/', function (req, res, next) {
 
@@ -40,9 +41,7 @@ router.post('/', function (req, res, next) {
         "includeAttachments" : (body.includeAttachments != 0),
         "includeTrashed" : (body.includeTrashed != 0)
       };
-      backup.startOnConnection(connection, params, backupComplete.bind(this, null, username), function (message) {
-        db.appendLog(username, message);
-      });
+      backup.startOnConnection(connection, params, _.bind(backupComplete, null, _, username), _.bind(db.appendLog, null, username));
       db.save(username, 'running', true);
     }
 

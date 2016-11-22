@@ -50,6 +50,7 @@
     "backup-node": "git://github.com/pryv/app-node-backup.git#feature\/pipe-stdout",
     "rmdir": "latest",
     "zip-folder": "latest",
-    "crypto": "latest"
+    "crypto": "latest",
+    "lodash": "^4.17.2"
   }
 }
