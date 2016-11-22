@@ -17,7 +17,7 @@ var dbPath = config.get('db:path');
 
 mkdirp(dbPath);
 
-var db = {},
+var infosCache = {},
     watchers = [];
 
 module.exports.load = function () {
@@ -25,19 +25,33 @@ module.exports.load = function () {
     ls.forEach(function (username) {
         if (fs.statSync(dbPath + username).isDirectory()) {
             var infos = require(userDbPath(username, '/infos.json'));
-            db[username] = infos;
+            infosCache[username] = infos;
         }
     });
-    console.log('Loaded ' + Object.keys(db).length + ' users.');
+    console.log('Loaded ' + Object.keys(infosCache).length + ' users.');
 };
 
+/**
+ * saves a key value object in username/info.json
+ *
+ * @param username
+ * @param key
+ * @param value
+ */
 module.exports.save = function (username, key, value) {
-    var infos = db[username] ? db[username] : {};
-    infos[key] = value;
-    fs.writeFileSync(userDbPath(username, '/infos.json'), JSON.stringify(infos));
-    db[username] = infos;
+    infosCache[username] = infosCache[username] || {};
+    infosCache[username][key] = value;
+    console.log('info', infosCache[username]);
+    fs.writeFileSync(userDbPath(username, '/infos.json'), JSON.stringify(infosCache[username]));
+    console.log('post infosCache.username', infosCache[username]);
 };
 
+/**
+ * returns the content of /username/log.json file
+ *
+ * @param username
+ * @returns {*}
+ */
 module.exports.log = function (username) {
     var file = userDbPath(username, '/log.json');
     if(!fs.existsSync(file)) {
@@ -46,6 +60,13 @@ module.exports.log = function (username) {
     return fs.readFileSync(file, 'utf-8');
 };
 
+/**
+ * appends message to /username/log.json file, notifies the message to the watchers.
+ *
+ * @param username
+ * @param message
+ * @param end       {Boolean} true if backup is finished, false otherwise
+ */
 module.exports.appendLog = function (username, message, end) {
     fs.writeFileSync(userDbPath(username, '/log.json'), message + '\n', {'flag': 'a'});
     var watcher = watchers[username];
@@ -54,16 +75,33 @@ module.exports.appendLog = function (username, message, end) {
     }
 };
 
+/**
+ * registers watcher for the /username/log.json file
+ *
+ * @param username {String}
+ * @param notify   {Function} callback for the notification
+ */
 module.exports.watchLog = function (username, notify) {
     watchers[username] = notify;
 };
 
+/**
+ * unregisters watcher for a user.
+ *
+ * @param username
+ */
 module.exports.unwatchLog = function (username) {
     watchers[username] = null;
 };
 
+/**
+ * returns cached info data
+ *
+ * @param username
+ * @returns {*}
+ */
 module.exports.infos = function (username) {
-    return db[username];
+    return infosCache[username];
 };
 
 module.exports.delete = function (username, callback) {
@@ -72,7 +110,7 @@ module.exports.delete = function (username, callback) {
             rmdir(dbPath + username, stepDone);
         },
         function removeOnDb(stepDone) {
-            db[username] = null;
+            delete infosCache[username];
             stepDone();
         }
     ], callback);
@@ -80,7 +118,7 @@ module.exports.delete = function (username, callback) {
 
 function userDbPath(username, extra) {
     var str = dbPath + username;
-    mkdirp(path.normalize(str));
+    mkdirp.sync(path.normalize(str));
     if (extra) {
         str += extra;
     }

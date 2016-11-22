@@ -36,20 +36,21 @@
     "grunt-contrib-watch": "latest"
   },
   "dependencies": {
-    "jquery": "latest",
     "async": "^2.1.2",
+    "backup-node": "git://github.com/pryv/app-node-backup.git#feature/pipe-stdout",
     "body-parser": "^1.15.2",
+    "crypto": "latest",
     "express": "^4.14.0",
+    "jquery": "latest",
+    "lodash": "^4.17.2",
     "mkdirp": "^0.5.1",
     "nconf": "^0.8.4",
-    "readyness": "^0.1.0",
-    "superagent": "^2.3.0",
-    "winston": "^2.3.0",
     "pryv": "latest",
-    "util": "latest",
-    "backup-node": "git://github.com/pryv/app-node-backup.git#feature\/pipe-stdout",
+    "readyness": "^0.1.0",
     "rmdir": "latest",
-    "zip-folder": "latest",
-    "crypto": "latest"
+    "superagent": "^2.3.0",
+    "util": "latest",
+    "winston": "^2.3.0",
+    "zip-folder": "latest"
   }
 }

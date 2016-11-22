@@ -8,20 +8,18 @@ var express = require('express'),
     config = require('../config'),
     zip = require('zip-folder'),
     crypto = require('crypto'),
-    fs = require('fs');
+    fs = require('fs'),
+    _ = require('lodash');
 
 
 // TODO: What if multiple parallel backups?
-var token = null,
-    username = null,
-    backupDir = null;
+var backupDir = null;
 
 router.post('/', function (req, res, next) {
 
   var body = req.body,
-      password = body.password;
-
-  username = body.username;
+      password = body.password,
+      username = body.username;
 
   // TODO: figure out this next() and do the same for other routes
   if (! username || username.length <= 4) {
@@ -55,7 +53,8 @@ router.post('/', function (req, res, next) {
         "includeAttachments" : body.includeAttachments,
         "includeTrashed" : body.includeTrashed
       };
-      backup.startOnConnection(connection, params, backupComplete, log);
+      backup.startOnConnection(connection, params, _.bind(backupComplete, null, _, username),
+        _.bind(db.appendLog, null, username));
       db.save(username, 'running', true);
     }
 
@@ -63,11 +62,7 @@ router.post('/', function (req, res, next) {
   });
 });
 
-var log = function(message) {
-  db.appendLog(username, message);
-};
-
-var backupComplete = function(err) {
+var backupComplete = function(err, username) {
   if(err) {
     return db.appendLog(username, err, true);
   }
