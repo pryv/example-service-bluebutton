@@ -105,7 +105,7 @@ describe('Storage', function () {
     });
 
     it('should create a zip file and delete all the user\'s info on db', function (done) {
-        var downloadPath = path.normalize(__dirname + '/../../download/');
+        var downloadPath = config.get('db:download');
         var backupDir = db.backupDir(credentials.username);
         var zipFile = crypto.createHash('md5').update(dummyToken).digest('hex') + '.zip';
 

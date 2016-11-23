@@ -18,7 +18,7 @@ var mkdirp = require('mkdirp'),
     BackupDirectory = backup.Directory;
 
 var dbPath = config.get('db:path'),
-    zipPath = path.normalize(__dirname + '/../../download');
+    zipPath = config.get('db:download');
 
 mkdirp(dbPath);
 
@@ -128,7 +128,7 @@ module.exports.deleteBackup = function (username, callback) {
             module.exports.backupDir(username).deleteDirs(stepDone);
         },
         function removeZip(stepDone) {
-            var zip = zipPath + '/' + zipFiles[username];
+            var zip = zipPath + zipFiles[username];
             if(zipFiles[username] && fs.existsSync(zip)) {
                 fs.unlink(zip, stepDone);
             } else {
@@ -151,7 +151,7 @@ module.exports.createZip = function (username, callback) {
     if (!fs.existsSync(zipPath)) {
         fs.mkdirSync(zipPath);
     }
-    zip(module.exports.backupDir(username).baseDir, zipPath + '/' + file, function (err) {
+    zip(module.exports.backupDir(username).baseDir, zipPath + file, function (err) {
         if(err) {
             return callback(err);
         }
@@ -162,7 +162,7 @@ module.exports.createZip = function (username, callback) {
 
 module.exports.backupDir = function (username) {
     if (!backupDirs[username]) {
-        backupDirs[username] = new BackupDirectory(username, config.get('pryv:domain'));
+        backupDirs[username] = new BackupDirectory(username, config.get('pryv:domain'), config.get('db:backup'));
     }
     return backupDirs[username];
 };
