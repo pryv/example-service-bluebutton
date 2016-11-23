@@ -47,7 +47,7 @@
     "winston": "^2.3.0",
     "pryv": "latest",
     "util": "latest",
-    "backup-node": "git://github.com/pryv/app-node-backup.git#feature\/pipe-stdout",
+    "backup-node": "git://github.com/pryv/app-node-backup.git",
     "rmdir": "latest",
     "zip-folder": "latest",
     "crypto": "latest",
