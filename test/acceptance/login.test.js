@@ -8,7 +8,7 @@ var request = require('superagent'),
     fs = require('fs'),
     path = require('path');
 
-var serverBasePath = 'https://' + config.get('http:hostname') + ':' + config.get('http:port');
+var serverBasePath = 'http://' + config.get('http:ip') + ':' + config.get('http:port');
 
 var validCredentials = {
   username: testUser.username,

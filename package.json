@@ -4,8 +4,10 @@
   "description": "Web service for clients to download all their data",
   "main": "src/app.js",
   "scripts": {
-    "start": "grunt; node src/server.js",
-    "test": "mocha test/**/*.test.js"
+    "start": "node src/server.js",
+    "test": "mocha test/**/*.test.js",
+    "docker-build": "docker build --build-arg NODE_ENV=production -t service-backup-app .",
+    "docker-run": "docker run -p 127.0.0.1:5780:5780 -it --rm -v /tmp:/var/pryv --name backup service-backup-app"
   },
   "repository": {
     "type": "git",
@@ -27,7 +29,6 @@
   "devDependencies": {
     "mocha": "^3.1.2",
     "should": "^11.1.1",
-    "rec-la": "https://github.com/pryv/rec-la.git",
     "grunt": "latest",
     "grunt-shell": "latest",
     "grunt-browserify": "latest",
@@ -47,7 +48,7 @@
     "winston": "^2.3.0",
     "pryv": "latest",
     "util": "latest",
-    "backup-node": "git://github.com/pryv/app-node-backup.git#feature\/pipe-stdout",
+    "backup-node": "git://github.com/pryv/app-node-backup.git",
     "rmdir": "latest",
     "zip-folder": "latest",
     "crypto": "latest",
