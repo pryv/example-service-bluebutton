@@ -9,7 +9,7 @@ require('../../src/server');
 
 require('readyness/wait/mocha');
 
-var serverBasePath = 'https://' + config.get('http:hostname') + ':' + config.get('http:port');
+var serverBasePath = 'http://' + config.get('http:ip') + ':' + config.get('http:port');
 
 describe("Delete", function () {
     var credentials = {
