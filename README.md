@@ -27,9 +27,9 @@ The production setup requires a configuration file `service-backup.config.json` 
 		"domain": "pryv.me"
 	},
 	"db": {
-    "path": "/var/pryv/data/service-backup/db-files",
-    "backup": "/var/pryv/data/service-backup/backup",
-    "download": "/var/pryv/data/service-backup/download"
+    "path": "/var/pryv/data/service-backup/db-files/",
+    "backup": "/var/pryv/data/service-backup/backup/",
+    "download": "/var/pryv/data/service-backup/download/"
   }
 }
 ```
