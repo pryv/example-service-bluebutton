@@ -12,13 +12,17 @@ if (typeof(nconf.get('config')) !== 'undefined') {
   configFile = nconf.get('config');
 }
 
+// build prod environment
+if (process.env.APP_CONFIG) {
+  configFile = process.env.APP_CONFIG;
+}
 
 if (fs.existsSync(configFile)) {
   configFile = fs.realpathSync(configFile);
-  logger.info('using custom config file: ' + configFile);
+  console.log('Using custom config file: ' + configFile);
 } else {
   if (configFile) {
-    logger.error('Cannot find custom config file: ' + configFile);
+    console.log('Cannot find custom config file: ' + configFile);
   }
 }
 
@@ -26,26 +30,17 @@ if (configFile) {
   nconf.file({ file: configFile});
 }
 
-var certKey = __dirname + '/../node_modules/rec-la/src/' + 'rec.la' + '-';
-
 // Set default values
 nconf.defaults({
-  serverOptions: {
-    key: fs.readFileSync(certKey + 'key.pem').toString(),
-    cert: fs.readFileSync(certKey + 'cert.crt').toString(),
-    ca: fs.readFileSync(certKey + 'ca.pem').toString()
-  },
   pryv: {
     domain : 'pryv.me',
-    access : 'https://reg.pryv.me/access',
     appId: 'backup-test'
   },
   http: {
-    port: '3443',
-    cert: 'rec.la',
-    hostname: 'l.rec.la',
+    port: '5780',
     ip: '127.0.0.1' // interface to bind,
   },
+  useRecLa: true,
   debug: {
     middlewareDebug : true
   },
@@ -62,7 +57,9 @@ nconf.defaults({
     ]
   },
   db: {
-    path: path.normalize(__dirname + '/../db-files/')
+    path: path.normalize(__dirname + '/../db-files/'),
+    backup: path.normalize(__dirname + '/../backup/'),
+    download: path.normalize(__dirname + '/../download/')
   }
 });
 

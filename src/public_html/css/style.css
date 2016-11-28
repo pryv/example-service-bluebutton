@@ -1,0 +1,60 @@
+body {
+    font-size: 15px;
+    font-weight: 300;
+    font-family: 'Roboto',Georgia,Arial,sans-serif;
+    color: #333333;
+    padding: 50px;
+    margin: 0;
+    background-color: #eef0f2;
+}
+
+.wrapper{
+    border-radius: 3px;
+    background-color: #FFFFFF;
+    width: 875px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    display: table;
+}
+
+.container {
+    padding: 30px 60px 48px 60px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    background-color: #eeeeee;
+}
+
+.backupDiv {
+    display: inline-block;
+    margin: 10px;
+    width: 295px;
+}
+
+.main {
+    position: relative;
+    margin: 1.5rem 0.7rem;
+}
+.main h1 {
+    font-size: 36px;
+    line-height: 1.42857143;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.main h1 > img {
+    max-width: 36px;
+    background-color: #FFFFFF;
+    vertical-align: text-top;
+}
+
+.consoleView textarea {
+    width: 97%;
+    height: 15em;
+}
+
+.doneView {
+    font-size: 20px;
+}

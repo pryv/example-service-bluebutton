@@ -1,17 +1,30 @@
-# service-backup
+# Pryv Service Backup
 
 Backup API service for Pryv
 
 ## Usage
 
-Prerequisites: Node, Redis
+Prerequisites: __*node*__ & __*npm*__
 
-## Contribute
+* Install dependencies: `npm install`
+* At the root of the repository, run: `npm start`
+* Open the following link in a browser: https://l.rec.la:3443
 
-Setup local environment `./scripts/setup-dev-environment.bash`
+### Docker
 
-Start database `./db/start-database`
+- build `npm run docker-build`
 
-Start API server: `npm start`
+- run `npm run docker-run`
 
-Run tests: `npm test`
+#### config file
+
+```
+{
+	"pryv": {
+		"domain": "pryv.io"
+	},
+	"http": {
+		"port": 74552
+	
+}
+```

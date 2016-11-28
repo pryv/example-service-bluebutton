@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>Pryv Service Backup</title>
+    <link href="./style.css" rel="stylesheet" type="text/css"/>
+    <link href="./alert.css" rel="stylesheet" type="text/css"/>
+    <link href="./loginView.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="./script-browserify.js"></script>
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div class="main">
+        <h1>
+            <img src="./img/iconPryv.png"><img>
+            Pryv Service Backup
+        </h1>
+
+        <div class="container">
+            <div class="loginView">
+                <h2>Pryv Login</h2>
+
+                <div class="checkboxDiv">
+                    <input type="checkbox" name="trashed" id="trashed" class="choice">
+                    <label for="trashed" class="choice-label">Include trashed data ?</label><br>
+                </div>
+                <div class="checkboxDiv">
+                    <input type="checkbox" name="attachment" id="attachment" class="choice">
+                    <label for="attachment" class="choice-label">Include attachments ?</label><br>
+                </div><br>
+
+                <label>Username :</label>
+                <input type="text" name="username" id="username" placeholder="Enter your username.">
+
+                <label>Password :</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password.">
+
+                <button id="login">Backup</button>
+            </div>
+
+            <div class="consoleView">
+                <h2>Backup Status</h2>
+                <textarea id="console" cols="80" rows="10" value="" readonly="readonly"></textarea>
+            </div>
+
+            <div class="backupView">
+                <div class="backupDiv">
+                    <h2>Download Backup File</h2>
+                    <form method="get" action="">
+                        <button id="download">Download</button>
+                    </form>
+                </div>
+                <div class="backupDiv">
+                    <h2>Delete Backup File</h2>
+                    <button id="delete">Delete</button>
+                </div>
+            </div>
+
+            <div class="doneView">
+                <p id="doneMessage">Your backup has successfully been deleted.<br>
+                    You can refresh this page to start another backup.</p>
+                <button id="refresh">Refresh</button>
+            </div>
+        </div>
+
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <p id="alertMessage"></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
