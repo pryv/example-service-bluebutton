@@ -18,9 +18,13 @@ var mkdirp = require('mkdirp'),
     BackupDirectory = backup.Directory;
 
 var dbPath = config.get('db:path'),
-    zipPath = config.get('db:download');
+    zipPath = config.get('db:download'),
+    backupPath = config.get('db:backup');
 
-mkdirp(dbPath);
+// creating directories if needed
+mkdirp.sync(dbPath);
+mkdirp.sync(zipPath);
+mkdirp.sync(backupPath);
 
 var infosCache = {},
     watchers = [],
@@ -162,7 +166,8 @@ module.exports.createZip = function (username, callback) {
 
 module.exports.backupDir = function (username) {
     if (!backupDirs[username]) {
-        backupDirs[username] = new BackupDirectory(username, config.get('pryv:domain'), config.get('db:backup'));
+        backupDirs[username] = new BackupDirectory(username, config.get('pryv:domain'),
+          backupPath);
     }
     return backupDirs[username];
 };

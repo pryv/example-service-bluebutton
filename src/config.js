@@ -38,7 +38,7 @@ nconf.defaults({
   },
   http: {
     port: '5780',
-    ip: '127.0.0.1' // interface to bind,
+    ip: '0.0.0.0' // interface to bind,
   },
   useRecLa: true,
   debug: {
