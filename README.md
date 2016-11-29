@@ -34,19 +34,27 @@ The production setup requires a configuration file `service-backup.config.json` 
 }
 ```
 
-Build the image using `./scripts/docker-build.sh`
+- Build the image using `./scripts/docker-build.sh`
 
-Run the container using `./script/docker-run.sh ${PathToConfigDir}`
+- Run the container using `./script/docker-run.sh ${PathToConfigDir}`
 
-### Node app
+- Open the following link in a browser: [http://127.0.0.1:5880](http://127.0.0.1:5880)
+
+### Development
+
+#### Node app
 
 - At the root of the repository, run: `npm start`
 - Open the following link in a browser: [http://0.0.0.0:5780](http://0.0.0.0:5780) **(Warning: app accessible from anyone on the same subnet)**
 
-### Docker container 
+#### Docker container 
 
 - Build image `npm run docker-build`
 
 - Run container `npm run docker-run`
 
 - Open the following link in a browser: [http://127.0.0.1:5880](http://127.0.0.1:5880)
+
+#### Run tests
+
+Use `npm test` to run the tests
