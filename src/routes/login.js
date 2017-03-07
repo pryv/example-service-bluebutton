@@ -48,7 +48,7 @@ router.post('/', function (req, res) {
         /* jshint ignore:end */
       };
       backup.startOnConnection(connection, params,
-        _.bind(backupComplete, null, _, username),
+        _.bind(backupComplete, null, _, username, password),
         _.bind(db.appendLog, null, username));
       db.save(username, 'running', true);
     }
@@ -57,14 +57,14 @@ router.post('/', function (req, res) {
   });
 });
 
-var backupComplete = function(err, username) {
+var backupComplete = function(err, username, password) {
   if(err) {
     db.appendLog(username, err, true);
     db.deleteBackup(username, function(err) {
       return console.log(err);
     });
   }
-  db.createZip(username, function(err, file) {
+  db.createZip(username, password, function(err, file) {
     if (err) {
       db.appendLog(username, 'Zip creation error', true);
       db.deleteBackup(username, function(err) {

@@ -12,7 +12,6 @@ var mkdirp = require('mkdirp'),
     path = require('path'),
     rmdir = require('rmdir'),
     async = require('async'),
-    zip = require('zip-folder'),
     crypto = require('crypto'),
     backup = require('backup-node'),
     BackupDirectory = backup.Directory;
@@ -148,16 +147,21 @@ module.exports.deleteBackup = function (username, callback) {
     ], callback);
 };
 
-module.exports.createZip = function (username, callback) {
+module.exports.createZip = function (username, password, callback) {
     var token = module.exports.infos(username).token;
     var hash = crypto.createHash('md5').update(token).digest('hex');
     var file = hash + '.zip';
     if (!fs.existsSync(zipPath)) {
         fs.mkdirSync(zipPath);
     }
-    zip(module.exports.backupDir(username).baseDir, zipPath + file, function (err) {
-        if(err) {
-            return callback(err);
+    var backupDir = module.exports.backupDir(username).baseDir;
+    var spawn = require('child_process').spawn;
+    var zipCmd = spawn('zip',['-P', password , zipPath + file,
+        '-rj', path.resolve(backupDir)]);
+
+    zipCmd.on('exit', function(code) {
+        if(code !== 0) {
+            return callback('Zip creation error');
         }
         zipFiles[username] = file;
         callback(null, file);

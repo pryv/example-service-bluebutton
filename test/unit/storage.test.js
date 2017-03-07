@@ -118,7 +118,7 @@ describe('Storage', function () {
                 backupDir.createDirs(stepDone);
             },
             function createZip(stepDone) {
-                db.createZip(credentials.username, stepDone);
+                db.createZip(credentials.username, credentials.password, stepDone);
             },
             function deleteInfo(stepDone) {
                 db.deleteBackup(credentials.username, stepDone);
