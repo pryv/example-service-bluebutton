@@ -5,7 +5,7 @@ var express = require('express'),
     backup = require('backup-node'),
     _ = require('lodash');
 
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
 
   var body = req.body,
       password = body.password,
@@ -13,10 +13,10 @@ router.post('/', function (req, res, next) {
 
   // TODO: figure out this next() and do the same for other routes
   if (! username || username.length <= 4) {
-    return next('Error: invalid username');
+    return res.status(400).send('Invalid username');
   }
   if(! password || password.length <= 6) {
-    return next('Error: invalid password');
+    return res.status(400).send('Invalid password');
   }
 
   var params = {
@@ -27,6 +27,10 @@ router.post('/', function (req, res, next) {
 
   backup.signInToPryv(params, function(err, connection) {
     if(err) {
+      // Trick to return a user readable error in case of host not found
+      if(err.indexOf && err.indexOf('ENOTFOUND') !== -1) {
+        err = 'Username not found';
+      }
       return res.status(400).send(err);
     }
 
