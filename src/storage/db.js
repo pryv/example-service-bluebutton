@@ -164,7 +164,10 @@ module.exports.createZip = function (username, password, callback) {
             return callback('Zip creation error');
         }
         zipFiles[username] = file;
-        callback(null, file);
+
+        module.exports.backupDir(username).deleteDirs(function(err) {
+            callback(err, file);
+        });
     });
 };
 
