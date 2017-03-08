@@ -157,7 +157,7 @@ module.exports.createZip = function (username, password, callback) {
     var backupDir = module.exports.backupDir(username).baseDir;
     var spawn = require('child_process').spawn;
     var zipCmd = spawn('zip',['-P', password , zipPath + file,
-        '-rj', path.resolve(backupDir)]);
+        '-r', './'], {cwd: backupDir});
 
     zipCmd.on('exit', function(code) {
         if(code !== 0) {
