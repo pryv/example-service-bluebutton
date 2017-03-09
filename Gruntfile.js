@@ -5,13 +5,6 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: require('./package.json'),
 
-    jshint: {
-      files: ['Gruntfile.js', 'src/**/*.js'],
-      options: {
-        jshintrc: '.jshintrc'
-      }
-    },
-
     browserify: {
       dist: {
         src: ['./src/public_html/js/*.js'],
@@ -53,9 +46,8 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('default', ['jshint', 'browserify', 'copy']);
+  grunt.registerTask('default', ['browserify', 'copy']);
 };

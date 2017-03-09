@@ -64,15 +64,14 @@ var backupComplete = function(err, username, password) {
       return console.log(err);
     });
   }
-  db.createZip(username, password, function(err, file) {
-    if (err) {
-      db.appendLog(username, 'Zip creation error', true);
-      db.deleteBackup(username, function(err) {
-        return console.log(err);
-      });
-    }
+  db.createZip(username, password).then((zip) => {
     db.appendLog(username, 'Backup completed!');
-    db.appendLog(username, 'Backup file: ' + file, true);
+    db.appendLog(username, 'Backup file: ' + zip, true);
+  }).catch((err) => {
+    db.appendLog(username, err, true);
+    db.deleteBackup(username, (err) => {
+      return console.log(err);
+    });
   });
 };
 
