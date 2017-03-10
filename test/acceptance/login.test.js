@@ -5,8 +5,7 @@ var request = require('superagent'),
     config = require('../../src/config'),
     db = require('../../src/storage/db'),
     testUser = require('../data/testUser.json'),
-    fs = require('fs'),
-    path = require('path');
+    fs = require('fs');
 
 var serverBasePath = 'http://' + config.get('http:ip') + ':' + config.get('http:port');
 
@@ -17,14 +16,14 @@ var validCredentials = {
 
 var invalidCredentials = {
   username: testUser.username,
-  password: "blabla"
-}
+  password: 'blabla'
+};
 
 require('../../src/server');
 
 describe('Backup', function () {
 
-  it('should backup all data in a zip when credentials are valid', function (done) {
+  it('should backup all data in a zip when credentials are valid', function () {
     request.post(serverBasePath + '/login').send(validCredentials).set('Content-type','application/json').end(function (err, res) {
       should.not.exists(err);
       res.status.should.eql(200);
@@ -35,10 +34,10 @@ describe('Backup', function () {
         db.unwatchLog(testUser.username);
         var endString = 'Backup file: ';
         should.equal((message.indexOf(endString) > -1), true);
-        var zip = message.replace(endString, "").replace('\n',"");
+        var zip = message.replace(endString, '').replace('\n','');
         var zipPath = config.get('db:download') + zip;
         should.equal(fs.existsSync(zipPath), true);
-        db.deleteBackup(testUser.username, done);
+        return db.deleteBackup(testUser.username);
       }
     });
   });

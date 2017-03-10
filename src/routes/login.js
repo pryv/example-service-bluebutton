@@ -60,8 +60,10 @@ router.post('/', function (req, res) {
 var backupComplete = function(err, username, password) {
   if(err) {
     db.appendLog(username, err, true);
-    db.deleteBackup(username, function(err) {
-      return console.log(err);
+    db.deleteBackup(username).then(() => {
+
+    }).catch((err) => {
+      console.log(err);
     });
   }
   db.createZip(username, password).then((zip) => {
@@ -69,9 +71,7 @@ var backupComplete = function(err, username, password) {
     db.appendLog(username, 'Backup file: ' + zip, true);
   }).catch((err) => {
     db.appendLog(username, err, true);
-    db.deleteBackup(username, (err) => {
-      return console.log(err);
-    });
+    db.deleteBackup(username).catch(console.log);
   });
 };
 

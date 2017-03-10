@@ -1,9 +1,9 @@
+
 var mkdirp = require('mkdirp'),
     config = require('../config'),
     fs = require('fs'),
     path = require('path'),
     rmdir = require('rmdir'),
-    async = require('async'),
     crypto = require('crypto'),
     backup = require('backup-node'),
     BackupDirectory = backup.Directory;
@@ -57,7 +57,7 @@ module.exports.log = function (username) {
   if (!fs.existsSync(file)) {
     fs.openSync(file, 'w+');
   }
-  fs.readFileSync(file, 'utf-8');
+  return fs.readFileSync(file, 'utf-8');
 };
 
 /**
@@ -104,39 +104,52 @@ module.exports.infos = function (username) {
   return infosCache[username];
 };
 
-module.exports.deleteBackup = function (username, callback) {
-  async.series([
-    function removeInfos(stepDone) {
+module.exports.deleteBackup = function (username) {
+  return Promise.all([
+    new Promise((resolve, reject) => {
       if(fs.existsSync(dbPath + username)) {
-        rmdir(dbPath + username, stepDone);
-      } else {
-        stepDone();
+        return rmdir(dbPath + username, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
       }
-    },
-    function removeInfosCache(stepDone) {
+      resolve();
+    }),
+    new Promise((resolve) => {
       if(infosCache[username]) {
         delete infosCache[username];
       }
-      stepDone();
-    },
-    function removeData(stepDone) {
-      module.exports.backupDir(username).deleteDirs(stepDone);
-    },
-    function removeZip(stepDone) {
+      resolve();
+    }),
+    new Promise((resolve, reject) => {
+      module.exports.backupDir(username).deleteDirs((err) => {
+        if(err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    }),
+    new Promise((resolve, reject) => {
       var zip = zipPath + zipFiles[username];
       if(zipFiles[username] && fs.existsSync(zip)) {
-        fs.unlink(zip, stepDone);
+        fs.unlink(zip, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
       } else {
-        stepDone();
+        resolve();
       }
-    },
-    function removeZipCache(stepDone){
+    }),
+    new Promise((resolve) => {
       if(zipFiles[username]) {
         delete zipFiles[username];
       }
-      stepDone();
-    }
-  ], callback);
+      resolve();
+    })]);
 };
 
 module.exports.createZip = function (username, password) {
@@ -151,13 +164,13 @@ module.exports.createZip = function (username, password) {
   var zipCmd = spawn('zip',['-P', password , zipPath + file,
     '-r', './'], {cwd: backupDir});
 
-  zipCmd.on('exit', (code) => {
-    if(code !== 0) {
-      return Promise.reject('Zip creation error');
-    }
-    zipFiles[username] = file;
+  return new Promise((resolve, reject) => {
+    zipCmd.on('exit', (code) => {
+      if(code !== 0) {
+        return reject('Zip creation error');
+      }
+      zipFiles[username] = file;
 
-    return new Promise((resolve, reject) => {
       module.exports.backupDir(username).deleteDirs((err) => {
         if (err) { return reject(err); }
         resolve(file);
