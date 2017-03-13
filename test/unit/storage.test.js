@@ -1,7 +1,6 @@
 /* global describe, it */
 
 var should = require('should'),
-    async = require('async'),
     fs = require('fs'),
     mkdirp = require('mkdirp'),
     rmdir = require('rmdir'),
@@ -16,56 +15,66 @@ describe('Storage', function () {
   var dbPath = config.get('db:path') + credentials.username;
   var dummyToken = 'iamadummytoken';
 
-  it('should load the user\'s info', function (done) {
+  it('should load the user\'s info', function () {
     var userInfo = {info: 'blabla'};
     var json = JSON.stringify(userInfo);
 
-    async.series([
-      function createInfo(stepDone) {
+    return Promise.all([
+      new Promise((resolve) =>  {
         mkdirp.sync(dbPath);
         fs.writeFileSync(dbPath + '/infos.json', json);
         should.equal(fs.readFileSync(dbPath + '/infos.json', 'utf-8'), json);
-        stepDone();
-      },
-      function loadInfo(stepDone) {
+        resolve();
+      }),
+      new Promise((resolve) => {
         db.load();
-        stepDone();
-      },
-      function verifyLoaded(stepDone) {
+        resolve();
+      }),
+      new Promise((resolve) => {
         should.exists(db.infos(credentials.username));
         should.equal(db.infos(credentials.username).info, userInfo.info);
-        stepDone();
-      },
-      function clean(stepDone) {
-        rmdir(dbPath, stepDone);
-      }
-    ], done);
+        resolve();
+      }),
+      new Promise((resolve, reject) => {
+        rmdir(dbPath, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
+      })
+    ]);
   });
 
-  it('should save the user\'s token and update it', function (done) {
-    async.series([
-      function saveToken(stepDone) {
+  it('should save the user\'s token and update it', function () {
+    return Promise.all([
+      new Promise((resolve) => {
         db.save(credentials.username, 'token', dummyToken);
-        stepDone();
-      },
-      function verifySaved(stepDone) {
+        resolve();
+      }),
+      new Promise((resolve) => {
         should.exists(db.infos(credentials.username));
         should.equal(db.infos(credentials.username).token, dummyToken);
-        stepDone();
-      },
-      function updateToken(stepDone) {
+        resolve();
+      }),
+      new Promise((resolve) => {
         db.save(credentials.username, 'token', dummyToken + 'updated');
-        stepDone();
-      },
-      function verifyUpdated(stepDone) {
+        resolve();
+      }),
+      new Promise((resolve) => {
         should.exists(db.infos(credentials.username));
         should.equal(db.infos(credentials.username).token, dummyToken + 'updated');
-        stepDone();
-      },
-      function clean(stepDone) {
-        rmdir(dbPath, stepDone);
-      }
-    ], done);
+        resolve();
+      }),
+      new Promise((resolve, reject) => {
+        rmdir(dbPath, (err) => {
+          if(err) {
+            return reject(err);
+          }
+          resolve();
+        });
+      })
+    ]);
   });
 
   it('should watch/unwatch the log file of provided user', function (done) {
@@ -81,62 +90,69 @@ describe('Storage', function () {
     db.appendLog(credentials.username, message, true);
   });
 
-  it('should append the log file of provided user with info message', function (done) {
+  it('should append the log file of provided user with info message', function () {
     var message = 'info';
 
-    async.series([
-      function createLog(stepDone) {
+    return Promise.all([
+      new Promise((resolve, reject) => {
         mkdirp.sync(dbPath);
-        fs.open(dbPath + '/log.json', 'w+', stepDone);
-      },
-      function appendLog(stepDone) {
+        fs.open(dbPath + '/log.json', 'w+', (err) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
+      }),
+      new Promise((resolve) => {
         db.appendLog(credentials.username, message);
-        stepDone();
-      },
-      function testLog(stepDone) {
+        resolve();
+      }),
+      new Promise((resolve) => {
         should.equal(db.log(credentials.username), message + '\n');
-        stepDone();
-      },
-      function clean(stepDone) {
-        rmdir(dbPath, stepDone);
-      }
-    ], done);
+        resolve();
+      }),
+      new Promise((resolve, reject) => {
+        rmdir(dbPath, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
+      })
+    ]);
   });
 
-  it('should create a zip file and delete all the user\'s info on db', function (done) {
+  it('should create a zip file and delete all the user\'s info on db', function () {
     var downloadPath = config.get('db:download');
     var backupDir = db.backupDir(credentials.username);
     var zipFile = crypto.createHash('md5').update(dummyToken).digest('hex') + '.zip';
 
-    async.series([
-      function saveToken(stepDone) {
+    return Promise.all([
+      new Promise((resolve, reject) => {
         db.save(credentials.username, 'token', dummyToken);
-        stepDone();
-      },
-      function createBackup(stepDone) {
-        backupDir.createDirs(stepDone);
-      },
-      function createZip(stepDone) {
-        db.createZip(credentials.username, credentials.password).then(() => {
-          stepDone();
-        }).catch((err) => {
-          stepDone(err);
+
+        backupDir.createDirs((err) => {
+          if (err) {
+            return reject(err);
+          }
+          should.equal(fs.existsSync(dbPath), true);
+          should.exists(db.infos(credentials.username));
+          resolve();
         });
-      },
-      function deleteInfo(stepDone) {
-        db.deleteBackup(credentials.username).then(() => {
-          stepDone();
-        }).catch((err) => {
-          stepDone(err);
-        });
-      },
-      function verifyDeleted(stepDone) {
-        should.equal(fs.existsSync(downloadPath + zipFile), false);
+      }),
+      db.createZip(credentials.username, credentials.password),
+      new Promise((resolve) => {
+        //should.equal(fs.existsSync(dbPath), false);
+        should.equal(fs.existsSync(downloadPath + zipFile), true);
+        resolve();
+      }),
+      db.deleteBackup(credentials.username),
+      new Promise((resolve) => {
         should.equal(fs.existsSync(dbPath), false);
-        should.equal(fs.existsSync(backupDir.baseDir), false);
+        should.equal(fs.existsSync(downloadPath + zipFile), false);
         should.not.exists(db.infos(credentials.username));
-        stepDone();
-      }
-    ], done);
+        resolve();
+      })
+    ]);
   });
 });

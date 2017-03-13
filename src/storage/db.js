@@ -3,7 +3,6 @@ var mkdirp = require('mkdirp'),
     config = require('../config'),
     fs = require('fs'),
     path = require('path'),
-    rmdir = require('rmdir'),
     crypto = require('crypto'),
     backup = require('backup-node'),
     BackupDirectory = backup.Directory;
@@ -108,7 +107,8 @@ module.exports.deleteBackup = function (username) {
   return Promise.all([
     new Promise((resolve, reject) => {
       if(fs.existsSync(dbPath + username)) {
-        return rmdir(dbPath + username, (err) => {
+        var exec = require('child_process').exec;
+        exec('rm -r ' + dbPath + username, (err) => {
           if (err) {
             return reject(err);
           }
@@ -153,28 +153,34 @@ module.exports.deleteBackup = function (username) {
 };
 
 module.exports.createZip = function (username, password) {
-  var token = module.exports.infos(username).token;
-  var hash = crypto.createHash('md5').update(token).digest('hex');
-  var file = hash + '.zip';
-  if (!fs.existsSync(zipPath)) {
-    fs.mkdirSync(zipPath);
-  }
-  var backupDir = module.exports.backupDir(username).baseDir;
-  var spawn = require('child_process').spawn;
-  var zipCmd = spawn('zip',['-P', password , zipPath + file,
-    '-r', './'], {cwd: backupDir});
-
   return new Promise((resolve, reject) => {
+    var token = module.exports.infos(username).token;
+    var hash = crypto.createHash('md5').update(token).digest('hex');
+    var file = hash + '.zip';
+    if (!fs.existsSync(zipPath)) {
+      fs.mkdirSync(zipPath);
+    }
+
+    var baseDir = module.exports.backupDir(username).baseDir;
+    var spawn = require('child_process').spawn;
+    var zipCmd = spawn('zip',['-P', password , zipPath + file,
+      '-r', './'], {cwd: baseDir});
+
     zipCmd.on('exit', (code) => {
       if(code !== 0) {
         return reject('Zip creation error');
       }
       zipFiles[username] = file;
 
-      module.exports.backupDir(username).deleteDirs((err) => {
-        if (err) { return reject(err); }
+      resolve(file);
+
+      /*module.exports.backupDir(username).deleteDirs((err) => {
+        if (err) {
+          return reject(err);
+        }
+
         resolve(file);
-      });
+      });*/
     });
   });
 };

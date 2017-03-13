@@ -60,11 +60,7 @@ router.post('/', function (req, res) {
 var backupComplete = function(err, username, password) {
   if(err) {
     db.appendLog(username, err, true);
-    db.deleteBackup(username).then(() => {
-
-    }).catch((err) => {
-      console.log(err);
-    });
+    db.deleteBackup(username).catch(console.log);
   }
   db.createZip(username, password).then((zip) => {
     db.appendLog(username, 'Backup completed!');
