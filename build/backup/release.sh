@@ -35,5 +35,5 @@ run mkdir -p $data_dir/attachments && mkdir -p $data_dir/previews && \
   chown -R app:app $data_dir
 
 # Install the script that runs the api service
-run mkdir /etc/service/backup
-run cp /pd_build/runit/backup /etc/service/core/run
+run mkdir /etc/service/backup && \
+  cp /pd_build/runit/backup /etc/service/backup/run
