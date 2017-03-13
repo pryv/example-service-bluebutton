@@ -112,13 +112,27 @@ describe('Storage', function () {
         async.series([
             function saveToken(stepDone) {
                 db.save(credentials.username, 'token', dummyToken);
+                should.exists(db.infos(credentials.username));
                 stepDone();
             },
             function createBackup(stepDone) {
-                backupDir.createDirs(stepDone);
+                backupDir.createDirs((err) => {
+                  if(err) {
+                    return stepDone(err);
+                  }
+                  should.equal(fs.existsSync(dbPath), true);
+                  stepDone();
+                });
             },
             function createZip(stepDone) {
-                db.createZip(credentials.username, credentials.password, stepDone);
+                db.createZip(credentials.username, credentials.password, (err) => {
+                  if(err) {
+                    return stepDone(err);
+                  }
+                  should.equal(fs.existsSync(downloadPath + zipFile), true);
+                  should.equal(fs.existsSync(backupDir.baseDir), false);
+                  stepDone();
+                });
             },
             function deleteInfo(stepDone) {
                 db.deleteBackup(credentials.username, stepDone);
@@ -126,7 +140,6 @@ describe('Storage', function () {
             function verifyDeleted(stepDone) {
                 should.equal(fs.existsSync(downloadPath + zipFile), false);
                 should.equal(fs.existsSync(dbPath), false);
-                should.equal(fs.existsSync(backupDir.baseDir), false);
                 should.not.exists(db.infos(credentials.username));
                 stepDone();
             }
