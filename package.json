@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "test": "mocha test/**/*.test.js",
     "docker-build": "grunt; docker build --build-arg NODE_ENV=production -t service-backup-app .",
-    "docker-run": "docker run -p 127.0.0.1:5880:5780 -it --rm --name backup service-backup-app", 
+    "docker-run": "docker run -p 127.0.0.1:5880:5780 -it --rm --name backup service-backup-app",
     "release": "true"
   },
   "repository": {
@@ -34,8 +34,11 @@
     "grunt-shell": "latest",
     "grunt-browserify": "latest",
     "grunt-contrib-copy": "latest",
-    "grunt-contrib-jshint": "latest",
-    "grunt-contrib-watch": "latest"
+    "grunt-contrib-eslint": "latest",
+    "grunt-contrib-watch": "latest",
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.16.1",
+    "eslint-plugin-flowtype": "^2.30.0"
   },
   "dependencies": {
     "jquery": "latest",

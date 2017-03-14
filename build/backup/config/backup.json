@@ -1,3 +1,7 @@
 {
-  
+  "db": {
+  "path": "/app/data/db-files",
+  "backup": "/app/data/backup",
+  "download": "/app/data/download"
+  }
 }
