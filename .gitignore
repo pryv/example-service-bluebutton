@@ -1,6 +1,6 @@
-db-files
-backup
-download
+/db-files
+/backup
+/download
 
 # Logs
 logs
@@ -47,3 +47,5 @@ dump.rdb
 redis-data
 *.iml
 dist/
+
+.DS_Store
