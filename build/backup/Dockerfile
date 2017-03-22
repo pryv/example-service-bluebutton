@@ -4,6 +4,8 @@ MAINTAINER "Tech@Pryv" <tech@pryv.com>
 ADD . /pd_build
 RUN /pd_build/install.sh
 
+VOLUME /app/data/db-files /app/data/backup
+
 # Ports:
 #   9000        backup api
 #

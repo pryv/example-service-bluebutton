@@ -2,6 +2,12 @@
 
 set -e
 
+mkdir -p /app/data/db-files
+chown -R app /app/data/db-files
+
+mkdir -p /app/data/backup
+chown -R app /app/data/backup
+
 cd /app/bin/
 
 export NODE_ENV=production
