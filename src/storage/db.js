@@ -54,7 +54,11 @@ module.exports.load = function () {
 module.exports.save = function (username, key, value) {
   infosCache[username] = infosCache[username] || {};
   infosCache[username][key] = value;
-  fs.writeFileSync(userDbPath(username,'infos.json'), JSON.stringify(infosCache[username]));
+  var infos = userDbPath(username,'infos.json');
+  if (!fs.existsSync(infos)) {
+    fs.openSync(infos, 'w+');
+  }
+  fs.writeFileSync(infos, JSON.stringify(infosCache[username]));
 };
 
 /**
