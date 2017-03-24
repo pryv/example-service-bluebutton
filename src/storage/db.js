@@ -33,7 +33,7 @@ var infosCache = {},
 module.exports.load = function () {
   var ls = fs.readdirSync(dbPath);
   ls.forEach(function (username) {
-    if (fs.statSync(path.join(dbPath,username)).isDirectory()) {
+    if (fs.statSync(path.normalize(dbPath, '/'+username)).isDirectory()) {
       var infos = require(userDbPath(username, 'infos.json'));
       infosCache[username] = infos;
     }
@@ -51,7 +51,7 @@ module.exports.load = function () {
 module.exports.save = function (username, key, value) {
   infosCache[username] = infosCache[username] || {};
   infosCache[username][key] = value;
-  fs.writeFileSync(userDbPath(path.join(username,'infos.json')), JSON.stringify(infosCache[username]));
+  fs.writeFileSync(userDbPath(username,'infos.json'), JSON.stringify(infosCache[username]));
 };
 
 /**
@@ -115,7 +115,7 @@ module.exports.infos = function (username) {
 module.exports.deleteBackup = function (username, callback) {
   async.series([
     function removeInfos(stepDone) {
-      var userDir = path.join(dbPath,username);
+      var userDir = path.normalize(dbPath,'/'+username);
       if(fs.existsSync(userDir)) {
         return rmdir(userDir, stepDone);
       } else {
@@ -132,7 +132,7 @@ module.exports.deleteBackup = function (username, callback) {
       module.exports.backupDir(username).deleteDirs(stepDone);
     },
     function removeZip(stepDone) {
-      var zip = zipPath + zipFiles[username];
+      var zip = path.normalize(zipPath,'/'+zipFiles[username]);
       if(zipFiles[username] && fs.existsSync(zip)) {
         fs.unlink(zip, stepDone);
       } else {
@@ -157,7 +157,7 @@ module.exports.createZip = function (username, password, callback) {
   }
   var backupDir = module.exports.backupDir(username).baseDir;
   var spawn = require('child_process').spawn;
-  var zipCmd = spawn('zip',['-P', password , path.join(zipPath,file),
+  var zipCmd = spawn('zip',['-P', password , path.normalize(zipPath,'/'+file),
     '-r', './'], {cwd: backupDir});
 
   zipCmd.on('exit', function(code) {
@@ -181,10 +181,10 @@ module.exports.backupDir = function (username) {
 };
 
 function userDbPath(username, extra) {
-  var str = path.join(dbPath + username);
+  var str = dbPath + '/' + username;
   mkdirp.sync(path.normalize(str));
   if (extra) {
-    str += extra;
+    str = str + '/' + extra;
   }
   return path.normalize(str);
 }

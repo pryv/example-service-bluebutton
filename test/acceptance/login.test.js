@@ -17,29 +17,29 @@ var validCredentials = {
 
 var invalidCredentials = {
   username: testUser.username,
-  password: "blabla"
-}
+  password: 'blabla'
+};
 
 require('../../src/server');
 
 describe('Backup', function () {
 
   it('should backup all data in a zip when credentials are valid', function (done) {
-    request.post(serverBasePath + '/login').send(validCredentials).set('Content-type','application/json').end(function (err, res) {
-      should.not.exists(err);
-      res.status.should.eql(200);
-      should.exists(db.infos(testUser.username).token);
-    });
     db.watchLog(testUser.username, function(message, end) {
       if(end) {
         db.unwatchLog(testUser.username);
         var endString = 'Backup file: ';
         should.equal((message.indexOf(endString) > -1), true);
-        var zip = message.replace(endString, "").replace('\n',"");
-        var zipPath = config.get('db:download') + zip;
+        var zip = message.replace(endString, '').replace('\n','');
+        var zipPath = path.normalize(config.get('db:download'), '/'+zip);
         should.equal(fs.existsSync(zipPath), true);
         db.deleteBackup(testUser.username, done);
       }
+    });
+    request.post(serverBasePath + '/login').send(validCredentials).set('Content-type','application/json').end(function (err, res) {
+      should.not.exists(err);
+      res.status.should.eql(200);
+      should.exists(db.infos(testUser.username).token);
     });
   });
 
