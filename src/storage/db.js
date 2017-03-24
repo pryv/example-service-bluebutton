@@ -34,11 +34,7 @@ module.exports.load = function () {
   var ls = fs.readdirSync(dbPath);
   ls.forEach(function (username) {
     if (fs.statSync(userDbPath(username)).isDirectory()) {
-      var infos = userDbPath(username, 'infos.json');
-      if (!fs.existsSync(infos)) {
-        fs.openSync(infos, 'w+');
-      }
-      infosCache[username] = require(infos);
+      infosCache[username] = require(userDbPath(username, 'infos.json'));
     }
   });
   console.log('Loaded ' + Object.keys(infosCache).length + ' users.');
@@ -55,9 +51,6 @@ module.exports.save = function (username, key, value) {
   infosCache[username] = infosCache[username] || {};
   infosCache[username][key] = value;
   var infos = userDbPath(username,'infos.json');
-  if (!fs.existsSync(infos)) {
-    fs.openSync(infos, 'w+');
-  }
   fs.writeFileSync(infos, JSON.stringify(infosCache[username]));
 };
 
@@ -69,9 +62,6 @@ module.exports.save = function (username, key, value) {
  */
 module.exports.log = function (username) {
   var file = userDbPath(username, 'log.json');
-  if (!fs.existsSync(file)) {
-    fs.openSync(file, 'w+');
-  }
   return fs.readFileSync(file, 'utf-8');
 };
 
@@ -188,9 +178,14 @@ module.exports.backupDir = function (username) {
 };
 
 function userDbPath(username, extra) {
-  var str = dbPath + '/' + username;
+  var str = path.normalize(dbPath + '/' + username);
+  mkdirp.sync(str);
+
   if (extra) {
-    str = str + '/' + extra;
+    str = path.normalize(str + '/' + extra);
+    if (!fs.existsSync(str)) {
+      fs.openSync(str, 'w+');
+    }
   }
-  return path.normalize(str);
+  return str;
 }
