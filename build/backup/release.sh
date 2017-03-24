@@ -20,7 +20,7 @@ run tar -x --owner app -f \
 PYTHON=$(which python2.7) run yarn install
 
 # Generate static html files using grunt
-run grunt
+run npm run grunt
 
 # Perform a release build of the source code. (-> lib)
 run npm run release

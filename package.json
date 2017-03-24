@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "mocha test/**/*.test.js",
+    "grunt": "grunt",
     "release": "true"
   },
   "repository": {
