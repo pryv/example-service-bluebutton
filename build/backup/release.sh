@@ -20,8 +20,8 @@ run tar -x --owner app -f \
 PYTHON=$(which python2.7) run yarn install
 
 # Install zip command
-run sudo apt-get update
-run sudo apt-get --yes --force-yes install zip
+run apt-get update
+run apt-get --yes --force-yes install zip
 
 # Generate static html files using grunt
 run npm run grunt
