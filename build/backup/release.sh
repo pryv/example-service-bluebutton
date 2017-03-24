@@ -12,12 +12,15 @@ header "Install application from release.tar"
 run mkdir -p $target_dir
 run chown app $target_dir
 
-# Unpack the application and run npm install. 
+# Unpack the application and run npm install.
 pushd $target_dir
 run tar -x --owner app -f \
   /pd_build/release.tar .
 
 PYTHON=$(which python2.7) run yarn install
+
+# Generate static html files using grunt
+run grunt
 
 # Perform a release build of the source code. (-> lib)
 run npm run release

@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "mocha test/**/*.test.js",
-    "docker-build": "grunt; docker build --build-arg NODE_ENV=production -t service-backup-app .",
-    "docker-run": "docker run -p 127.0.0.1:5880:5780 -it --rm --name backup service-backup-app",
     "release": "true"
   },
   "repository": {
