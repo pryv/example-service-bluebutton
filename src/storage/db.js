@@ -33,9 +33,12 @@ var infosCache = {},
 module.exports.load = function () {
   var ls = fs.readdirSync(dbPath);
   ls.forEach(function (username) {
-    if (fs.statSync(path.normalize(dbPath, '/'+username)).isDirectory()) {
-      var infos = require(userDbPath(username, 'infos.json'));
-      infosCache[username] = infos;
+    if (fs.statSync(userDbPath(username)).isDirectory()) {
+      var infos = userDbPath(username, 'infos.json');
+      if (!fs.existsSync(infos)) {
+        fs.openSync(infos, 'w+');
+      }
+      infosCache[username] = require(infos);
     }
   });
   console.log('Loaded ' + Object.keys(infosCache).length + ' users.');
@@ -182,7 +185,6 @@ module.exports.backupDir = function (username) {
 
 function userDbPath(username, extra) {
   var str = dbPath + '/' + username;
-  mkdirp.sync(path.normalize(str));
   if (extra) {
     str = str + '/' + extra;
   }
