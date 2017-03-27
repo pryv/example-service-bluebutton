@@ -14,7 +14,7 @@ var db = require('../../src/storage/db'),
 
 describe('Storage', function () {
   var credentials = require('../data/testUser.json');
-  var dbPath = path.normalize(config.get('db:path'), '/'+credentials.username);
+  var dbPath = path.normalize(config.get('db:path') + '/' +credentials.username);
   var dummyToken = 'iamadummytoken';
 
   it('should load the user\'s info', function (done) {
@@ -24,7 +24,7 @@ describe('Storage', function () {
     async.series([
       function createInfo(stepDone) {
         mkdirp.sync(dbPath);
-        var infoPath = path.normalize(dbPath, '/infos.json');
+        var infoPath = path.normalize(dbPath + '/infos.json');
         fs.writeFileSync(infoPath, json);
         should.equal(fs.readFileSync(infoPath, 'utf-8'), json);
         stepDone();
@@ -89,7 +89,7 @@ describe('Storage', function () {
     async.series([
       function createLog(stepDone) {
         mkdirp.sync(dbPath);
-        fs.open(path.normalize(dbPath, '/log.json'), 'w+', stepDone);
+        fs.open(path.normalize(dbPath + '/log.json'), 'w+', stepDone);
       },
       function appendLog(stepDone) {
         db.appendLog(credentials.username, message);
@@ -130,7 +130,7 @@ describe('Storage', function () {
           if(err) {
             return stepDone(err);
           }
-          should.equal(fs.existsSync(path.normalize(downloadPath, '/'+zipFile)), true);
+          should.equal(fs.existsSync(path.normalize(downloadPath + '/' + zipFile)), true);
           should.equal(fs.existsSync(backupDir.baseDir), false);
           stepDone();
         });
@@ -139,7 +139,7 @@ describe('Storage', function () {
         db.deleteBackup(credentials.username, stepDone);
       },
       function verifyDeleted(stepDone) {
-        should.equal(fs.existsSync(path.normalize(downloadPath, '/'+zipFile)), false);
+        should.equal(fs.existsSync(path.normalize(downloadPath + '/' + zipFile)), false);
         should.equal(fs.existsSync(dbPath), false);
         should.not.exists(db.infos(credentials.username));
         stepDone();

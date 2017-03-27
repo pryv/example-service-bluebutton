@@ -112,7 +112,7 @@ module.exports.infos = function (username) {
 module.exports.deleteBackup = function (username, callback) {
   async.series([
     function removeInfos(stepDone) {
-      var userDir = path.normalize(dbPath,'/'+username);
+      var userDir = path.normalize(dbPath + '/' + username);
       if(fs.existsSync(userDir)) {
         return rmdir(userDir, stepDone);
       } else {
@@ -129,7 +129,7 @@ module.exports.deleteBackup = function (username, callback) {
       module.exports.backupDir(username).deleteDirs(stepDone);
     },
     function removeZip(stepDone) {
-      var zip = path.normalize(zipPath,'/'+zipFiles[username]);
+      var zip = path.normalize(zipPath + '/' + zipFiles[username]);
       if(zipFiles[username] && fs.existsSync(zip)) {
         fs.unlink(zip, stepDone);
       } else {
@@ -154,7 +154,7 @@ module.exports.createZip = function (username, password, callback) {
   }
   var backupDir = module.exports.backupDir(username).baseDir;
   var spawn = require('child_process').spawn;
-  var zipCmd = spawn('zip',['-P', password , path.normalize(zipPath,'/'+file),
+  var zipCmd = spawn('zip',['-P', password , path.normalize(zipPath + '/' +file),
     '-r', './'], {cwd: backupDir});
 
   zipCmd.on('exit', function(code) {
