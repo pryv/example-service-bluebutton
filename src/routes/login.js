@@ -11,12 +11,8 @@ router.post('/', function (req, res) {
       password = body.password,
       username = body.username;
 
-  // TODO: figure out this next() and do the same for other routes
-  if (! username || username.length <= 4) {
-    return res.status(400).send('Invalid username');
-  }
-  if(! password || password.length <= 6) {
-    return res.status(400).send('Invalid password');
+  if (! username || ! password) {
+    return res.status(400).send('Please provide your username and password');
   }
 
   var params = {
