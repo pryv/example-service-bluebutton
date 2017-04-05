@@ -75,6 +75,7 @@ function readStatus(username) {
     var str = xhr.responseText.substring(last_index, curr_index);
     last_index = curr_index;
     checkLog(str);
+    console.log(str);
   };
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   xhr.send(JSON.stringify({username: username, token: token}));
