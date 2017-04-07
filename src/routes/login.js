@@ -15,8 +15,6 @@ router.post('/', function (req, res) {
     return res.status(400).send('Please provide your username and password');
   }
 
-  console.log(body.domain);
-
   var params = {
     'username': username,
     'password': password,
@@ -59,18 +57,33 @@ var backupComplete = function(err, username, password) {
   if(err) {
     db.appendLog(username, err, true);
     db.deleteBackup(username, function(err) {
-      return console.log(err);
+      if(err) {
+        return console.log(err);
+      }
     });
   }
   db.createZip(username, password, function(err, file) {
     if (err) {
       db.appendLog(username, 'Zip creation error', true);
       db.deleteBackup(username, function(err) {
-        return console.log(err);
+        if(err) {
+          return console.log(err);
+        }
       });
     }
     db.appendLog(username, 'Backup completed!');
     db.appendLog(username, 'Backup file: ' + file, true);
+
+    var ttl = config.get('db:ttl');
+    if(ttl) {
+      setTimeout(function(){
+        db.deleteBackup(username, function(err) {
+          if(err) {
+            return console.log(err);
+          }
+        });
+      }, ttl);
+    }
   });
 };
 

@@ -59,7 +59,8 @@ nconf.defaults({
   db: {
     path: path.normalize(__dirname + '/../db-files/'),
     backup: path.normalize(__dirname + '/../backup/'),
-    download: path.normalize(__dirname + '/../download/')
+    download: path.normalize(__dirname + '/../download/'),
+    ttl: 3600000
   }
 });
 
