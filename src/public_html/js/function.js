@@ -18,10 +18,13 @@ module.exports.loginProcess = function() {
     display.colorError();
     display.alertDisplay('You must enter your username and password !');
   } else {
+    var domain = (new RegExp('[?&]'+encodeURIComponent('domain')+'=([^&]*)')).exec(window.location.search);
     var data = { username: username,
       password: password,
       includeTrashed: $('#trashed:checked').length,
-      includeAttachments: $('#attachment:checked').length };
+      includeAttachments: $('#attachment:checked').length,
+      domain: domain ? decodeURIComponent(domain[1]): null
+    };
 
     ajaxPost('/login', data, function (res) {
       if (res) {

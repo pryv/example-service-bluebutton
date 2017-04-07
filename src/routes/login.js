@@ -15,10 +15,12 @@ router.post('/', function (req, res) {
     return res.status(400).send('Please provide your username and password');
   }
 
+  console.log(body.domain);
+
   var params = {
     'username': username,
     'password': password,
-    'domain': config.get('pryv:domain')
+    'domain': body.domain || config.get('pryv:domain')
   };
 
   backup.signInToPryv(params, function(err, connection) {
