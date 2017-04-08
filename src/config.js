@@ -34,7 +34,8 @@ if (configFile) {
 nconf.defaults({
   pryv: {
     domain : 'pryv.me',
-    appId: 'backup-test'
+    appId: 'backup-test',
+    enforceDomain: true
   },
   http: {
     port: '5780',

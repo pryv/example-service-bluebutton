@@ -10,7 +10,11 @@ router.post('/', function (req, res) {
   var body = req.body,
       password = body.password,
       username = body.username,
-      domain = body.domain || config.get('pryv:domain');
+      domain = config.get('pryv:domain');
+
+  if(!config.get('pryv:enforceDomain') && body.domain) {
+    domain = body.domain;
+  }
 
   if (! username || ! password) {
     return res.status(400).send('Please provide your username and password');
