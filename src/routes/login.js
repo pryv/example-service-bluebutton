@@ -9,7 +9,8 @@ router.post('/', function (req, res) {
 
   var body = req.body,
       password = body.password,
-      username = body.username;
+      username = body.username,
+      domain = body.domain || config.get('pryv:domain');
 
   if (! username || ! password) {
     return res.status(400).send('Please provide your username and password');
@@ -18,7 +19,7 @@ router.post('/', function (req, res) {
   var params = {
     'username': username,
     'password': password,
-    'domain': body.domain || config.get('pryv:domain')
+    'domain': domain
   };
 
   backup.signInToPryv(params, function(err, connection) {
@@ -32,52 +33,52 @@ router.post('/', function (req, res) {
 
     // Save token
     var token = connection.auth;
-    db.save(connection.username, 'token', token);
+    db.save(connection.username, domain, 'token', token);
 
-    if(!db.infos(username).running) {
+    if(!db.infos(username, domain).running) {
       // Start backup
       var params = {
-        'backupDirectory' : db.backupDir(username),
+        'backupDirectory' : db.backupDir(username, domain),
         /* jshint ignore:start */
         'includeAttachments' : (body.includeAttachments != 0),
         'includeTrashed' : (body.includeTrashed != 0)
         /* jshint ignore:end */
       };
       backup.startOnConnection(connection, params,
-        _.bind(backupComplete, null, _, username, password),
-        _.bind(db.appendLog, null, username));
-      db.save(username, 'running', true);
+        _.bind(backupComplete, null, _, username, domain, password),
+        _.bind(db.appendLog, null, username, domain));
+      db.save(username, domain, 'running', true);
     }
 
-    res.status(200).send({'token': token, 'log': db.log(username)});
+    res.status(200).send({'token': token, 'log': db.log(username, domain)});
   });
 });
 
-var backupComplete = function(err, username, password) {
+var backupComplete = function(err, username, domain, password) {
   if(err) {
-    db.appendLog(username, err, true);
-    db.deleteBackup(username, function(err) {
+    db.appendLog(username, domain, err, true);
+    db.deleteBackup(username, domain, function(err) {
       if(err) {
         return console.log(err);
       }
     });
   }
-  db.createZip(username, password, function(err, file) {
+  db.createZip(username, domain, password, function(err, file) {
     if (err) {
-      db.appendLog(username, 'Zip creation error', true);
-      db.deleteBackup(username, function(err) {
+      db.appendLog(username, domain, 'Zip creation error', true);
+      db.deleteBackup(username, domain, function(err) {
         if(err) {
           return console.log(err);
         }
       });
     }
-    db.appendLog(username, 'Backup completed!');
-    db.appendLog(username, 'Backup file: ' + file, true);
+    db.appendLog(username, domain, 'Backup completed!');
+    db.appendLog(username, domain, 'Backup file: ' + file, true);
 
     var ttl = config.get('db:ttl');
     if(ttl) {
       setTimeout(function(){
-        db.deleteBackup(username, function(err) {
+        db.deleteBackup(username, domain, function(err) {
           if(err) {
             return console.log(err);
           }

@@ -32,9 +32,9 @@ var infosCache = {},
 
 module.exports.load = function () {
   var ls = fs.readdirSync(dbPath);
-  ls.forEach(function (username) {
-    if (fs.statSync(userDbPath(username)).isDirectory()) {
-      infosCache[username] = require(userDbPath(username, 'infos.json'));
+  ls.forEach(function (endpoint) {
+    if (fs.statSync(userDbPath(endpoint)).isDirectory()) {
+      infosCache[endpoint] = require(userDbPath(endpoint, 'infos.json'));
     }
   });
   console.log('Loaded ' + Object.keys(infosCache).length + ' users.');
@@ -47,11 +47,11 @@ module.exports.load = function () {
  * @param key
  * @param value
  */
-module.exports.save = function (username, key, value) {
-  infosCache[username] = infosCache[username] || {};
-  infosCache[username][key] = value;
-  var infos = userDbPath(username,'infos.json');
-  fs.writeFileSync(infos, JSON.stringify(infosCache[username]));
+module.exports.save = function (username, domain, key, value) {
+  infosCache[userDomainPath(username, domain)] = infosCache[userDomainPath(username, domain)] || {};
+  infosCache[userDomainPath(username, domain)][key] = value;
+  var infos = userDbPath(userDomainPath(username, domain),'infos.json');
+  fs.writeFileSync(infos, JSON.stringify(infosCache[userDomainPath(username, domain)]));
 };
 
 /**
@@ -60,8 +60,8 @@ module.exports.save = function (username, key, value) {
  * @param username
  * @returns {*}
  */
-module.exports.log = function (username) {
-  var file = userDbPath(username, 'log.json');
+module.exports.log = function (username, domain) {
+  var file = userDbPath(userDomainPath(username, domain), 'log.json');
   return fs.readFileSync(file, 'utf-8');
 };
 
@@ -72,9 +72,9 @@ module.exports.log = function (username) {
  * @param message
  * @param end       {Boolean} true if backup is finished, false otherwise
  */
-module.exports.appendLog = function (username, message, end) {
-  fs.writeFileSync(userDbPath(username, 'log.json'), message + '\n', {'flag': 'a'});
-  var watcher = watchers[username];
+module.exports.appendLog = function (username, domain, message, end) {
+  fs.writeFileSync(userDbPath(userDomainPath(username, domain), 'log.json'), message + '\n', {'flag': 'a'});
+  var watcher = watchers[userDomainPath(username, domain)];
   if (typeof watcher === 'function') {
     watcher(message + '\n', end);
   }
@@ -86,8 +86,8 @@ module.exports.appendLog = function (username, message, end) {
  * @param username {String}
  * @param notify   {Function} callback for the notification
  */
-module.exports.watchLog = function (username, notify) {
-  watchers[username] = notify;
+module.exports.watchLog = function (username, domain, notify) {
+  watchers[userDomainPath(username, domain)] = notify;
 };
 
 /**
@@ -95,8 +95,8 @@ module.exports.watchLog = function (username, notify) {
  *
  * @param username
  */
-module.exports.unwatchLog = function (username) {
-  watchers[username] = null;
+module.exports.unwatchLog = function (username, domain) {
+  watchers[userDomainPath(username, domain)] = null;
 };
 
 /**
@@ -105,14 +105,14 @@ module.exports.unwatchLog = function (username) {
  * @param username
  * @returns {*}
  */
-module.exports.infos = function (username) {
-  return infosCache[username];
+module.exports.infos = function (username, domain) {
+  return infosCache[userDomainPath(username, domain)];
 };
 
-module.exports.deleteBackup = function (username, callback) {
+module.exports.deleteBackup = function (username, domain, callback) {
   async.series([
     function removeInfos(stepDone) {
-      var userDir = path.normalize(dbPath + '/' + username);
+      var userDir = path.normalize(dbPath + '/' + userDomainPath(username, domain));
       if(fs.existsSync(userDir)) {
         return rmdir(userDir, stepDone);
       } else {
@@ -120,39 +120,39 @@ module.exports.deleteBackup = function (username, callback) {
       }
     },
     function removeInfosCache(stepDone) {
-      if(infosCache[username]) {
-        delete infosCache[username];
+      if(infosCache[userDomainPath(username, domain)]) {
+        delete infosCache[userDomainPath(username, domain)];
       }
       stepDone();
     },
     function removeData(stepDone) {
-      module.exports.backupDir(username).deleteDirs(stepDone);
+      module.exports.backupDir(username, domain).deleteDirs(stepDone);
     },
     function removeZip(stepDone) {
-      var zip = path.normalize(zipPath + '/' + zipFiles[username]);
-      if(zipFiles[username] && fs.existsSync(zip)) {
+      var zip = path.normalize(zipPath + '/' + zipFiles[userDomainPath(username, domain)]);
+      if(zipFiles[userDomainPath(username, domain)] && fs.existsSync(zip)) {
         fs.unlink(zip, stepDone);
       } else {
         stepDone();
       }
     },
     function removeZipCache(stepDone){
-      if(zipFiles[username]) {
-        delete zipFiles[username];
+      if(zipFiles[userDomainPath(username, domain)]) {
+        delete zipFiles[userDomainPath(username, domain)];
       }
       stepDone();
     }
   ], callback);
 };
 
-module.exports.createZip = function (username, password, callback) {
-  var token = module.exports.infos(username).token;
+module.exports.createZip = function (username, domain, password, callback) {
+  var token = module.exports.infos(username, domain).token;
   var hash = crypto.createHash('md5').update(token).digest('hex');
   var file = hash + '.zip';
   if (!fs.existsSync(zipPath)) {
     fs.mkdirSync(zipPath);
   }
-  var backupDir = module.exports.backupDir(username).baseDir;
+  var backupDir = module.exports.backupDir(username, domain).baseDir;
   var spawn = require('child_process').spawn;
   var zipCmd = spawn('zip',['-P', password , path.normalize(zipPath + '/' +file),
     '-r', './'], {cwd: backupDir});
@@ -161,24 +161,23 @@ module.exports.createZip = function (username, password, callback) {
     if(code !== 0) {
       return callback('Zip creation error');
     }
-    zipFiles[username] = file;
+    zipFiles[userDomainPath(username, domain)] = file;
 
-    module.exports.backupDir(username).deleteDirs(function(err) {
+    module.exports.backupDir(username, domain).deleteDirs(function(err) {
       callback(err, file);
     });
   });
 };
 
-module.exports.backupDir = function (username) {
-  if (!backupDirs[username]) {
-    backupDirs[username] = new BackupDirectory(username, config.get('pryv:domain'),
-          backupPath);
+module.exports.backupDir = function (username, domain) {
+  if (!backupDirs[userDomainPath(username, domain)]) {
+    backupDirs[userDomainPath(username, domain)] = new BackupDirectory(username, domain, backupPath);
   }
-  return backupDirs[username];
+  return backupDirs[userDomainPath(username, domain)];
 };
 
-function userDbPath(username, extra) {
-  var str = path.normalize(dbPath + '/' + username);
+function userDbPath (endpoint, extra) {
+  var str = path.normalize(dbPath + '/' + endpoint);
   mkdirp.sync(str);
 
   if (extra) {
@@ -188,4 +187,8 @@ function userDbPath(username, extra) {
     }
   }
   return str;
+}
+
+function userDomainPath (username, domain) {
+  return username + '.' + domain;
 }

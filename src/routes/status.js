@@ -1,7 +1,8 @@
 var express = require('express'),
     router = express.Router();
 
-var db = require('../storage/db');
+var db = require('../storage/db'),
+    config = require('../config');
 
 router.post('/', function (req, res) {
   res.writeHead(200, { 'Content-Type': 'application/octet-stream',
@@ -9,13 +10,14 @@ router.post('/', function (req, res) {
   });
 
   var body = req.body,
-      username = body.username;
-
-  if(db.infos(username).token === body.token) {
-    db.watchLog(username, function(log, end) {
+      username = body.username,
+      domain = body.domain || config.get('pryv:domain');
+  
+  if(db.infos(username, domain).token === body.token) {
+    db.watchLog(username, domain, function(log, end) {
       res.write(log);
       if(end) {
-        db.unwatchLog(username);
+        db.unwatchLog(username, domain);
         res.end('END');
       }
     });

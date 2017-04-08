@@ -14,7 +14,8 @@ var db = require('../../src/storage/db'),
 
 describe('Storage', function () {
   var credentials = require('../data/testUser.json');
-  var dbPath = path.normalize(config.get('db:path') + '/' +credentials.username);
+  var domain = config.get('pryv:domain');
+  var dbPath = path.normalize(config.get('db:path') + '/' + credentials.username + '.' + domain);
   var dummyToken = 'iamadummytoken';
 
   it('should load the user\'s info', function (done) {
@@ -34,8 +35,8 @@ describe('Storage', function () {
         stepDone();
       },
       function verifyLoaded(stepDone) {
-        should.exists(db.infos(credentials.username));
-        should.equal(db.infos(credentials.username).info, userInfo.info);
+        should.exists(db.infos(credentials.username, domain));
+        should.equal(db.infos(credentials.username, domain).info, userInfo.info);
         stepDone();
       },
       function clean(stepDone) {
@@ -47,21 +48,21 @@ describe('Storage', function () {
   it('should save the user\'s token and update it', function (done) {
     async.series([
       function saveToken(stepDone) {
-        db.save(credentials.username, 'token', dummyToken);
+        db.save(credentials.username, domain, 'token', dummyToken);
         stepDone();
       },
       function verifySaved(stepDone) {
-        should.exists(db.infos(credentials.username));
-        should.equal(db.infos(credentials.username).token, dummyToken);
+        should.exists(db.infos(credentials.username, domain));
+        should.equal(db.infos(credentials.username, domain).token, dummyToken);
         stepDone();
       },
       function updateToken(stepDone) {
-        db.save(credentials.username, 'token', dummyToken + 'updated');
+        db.save(credentials.username, domain, 'token', dummyToken + 'updated');
         stepDone();
       },
       function verifyUpdated(stepDone) {
-        should.exists(db.infos(credentials.username));
-        should.equal(db.infos(credentials.username).token, dummyToken + 'updated');
+        should.exists(db.infos(credentials.username, domain));
+        should.equal(db.infos(credentials.username, domain).token, dummyToken + 'updated');
         stepDone();
       },
       function clean(stepDone) {
@@ -73,14 +74,14 @@ describe('Storage', function () {
   it('should watch/unwatch the log file of provided user', function (done) {
     var message = 'coucou';
 
-    db.watchLog(credentials.username, function (log, end) {
+    db.watchLog(credentials.username, domain, function (log, end) {
       should.equal(log, message + '\n');
       if (end) {
-        db.unwatchLog(credentials.username);
+        db.unwatchLog(credentials.username, domain);
         rmdir(dbPath, done);
       }
     });
-    db.appendLog(credentials.username, message, true);
+    db.appendLog(credentials.username, domain, message, true);
   });
 
   it('should append the log file of provided user with info message', function (done) {
@@ -92,11 +93,11 @@ describe('Storage', function () {
         fs.open(path.normalize(dbPath + '/log.json'), 'w+', stepDone);
       },
       function appendLog(stepDone) {
-        db.appendLog(credentials.username, message);
+        db.appendLog(credentials.username, domain, message);
         stepDone();
       },
       function testLog(stepDone) {
-        should.equal(db.log(credentials.username), message + '\n');
+        should.equal(db.log(credentials.username, domain), message + '\n');
         stepDone();
       },
       function clean(stepDone) {
@@ -107,13 +108,13 @@ describe('Storage', function () {
 
   it('should create a zip file and delete all the user\'s info on db', function (done) {
     var downloadPath = config.get('db:download');
-    var backupDir = db.backupDir(credentials.username);
+    var backupDir = db.backupDir(credentials.username, domain);
     var zipFile = crypto.createHash('md5').update(dummyToken).digest('hex') + '.zip';
 
     async.series([
       function saveToken(stepDone) {
-        db.save(credentials.username, 'token', dummyToken);
-        should.exists(db.infos(credentials.username));
+        db.save(credentials.username, domain, 'token', dummyToken);
+        should.exists(db.infos(credentials.username, domain));
         stepDone();
       },
       function createBackup(stepDone) {
@@ -126,7 +127,7 @@ describe('Storage', function () {
         });
       },
       function createZip(stepDone) {
-        db.createZip(credentials.username, credentials.password, (err) => {
+        db.createZip(credentials.username, domain, credentials.password, (err) => {
           if(err) {
             return stepDone(err);
           }
@@ -136,12 +137,12 @@ describe('Storage', function () {
         });
       },
       function deleteInfo(stepDone) {
-        db.deleteBackup(credentials.username, stepDone);
+        db.deleteBackup(credentials.username, domain, stepDone);
       },
       function verifyDeleted(stepDone) {
         should.equal(fs.existsSync(path.normalize(downloadPath + '/' + zipFile)), false);
         should.equal(fs.existsSync(dbPath), false);
-        should.not.exists(db.infos(credentials.username));
+        should.not.exists(db.infos(credentials.username, domain));
         stepDone();
       }
     ], done);
