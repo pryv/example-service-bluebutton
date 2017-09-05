@@ -1,5 +1,5 @@
 {
-  "name": "service-backup",
+  "name": "service-bluebutton",
   "version": "1.0.0",
   "description": "Web service for clients to download all their data",
   "main": "src/app.js",
@@ -16,6 +16,7 @@
   "keywords": [
     "pryv",
     "backup",
+    "bluebutton",
     "web",
     "tool",
     "service"
