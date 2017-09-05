@@ -1,6 +1,6 @@
-# Pryv Service Backup
+# Pryv Service Bluebutton
 
-Backup service for Pryv with simple web app. Must be run behind a Nginx process handling the HTTPS encryption.
+Bluebutton service for Pryv with simple web app. Must be run behind a Nginx process handling the HTTPS encryption.
 
 ## Install
 
@@ -19,7 +19,7 @@ Build it using `npm run docker-build`
 
 ### Production
 
-The production setup requires a configuration file `service-backup.config.json` with the following fields:
+The production setup requires a configuration file `service-bluebutton.config.json` with the following fields:
 
 ```
 {
@@ -27,10 +27,10 @@ The production setup requires a configuration file `service-backup.config.json` 
 		"domain": "pryv.me"
 	},
 	"db": {
-    "path": "/var/pryv/data/service-backup/db-files/",
-    "backup": "/var/pryv/data/service-backup/backup/",
-    "download": "/var/pryv/data/service-backup/download/"
-  }
+		"path": "/var/pryv/data/service-bluebutton/db-files/",
+		"backup": "/var/pryv/data/service-bluebutton/backup/",
+		"download": "/var/pryv/data/service-bluebutton/download/"
+  	}
 }
 ```
 
