@@ -13,8 +13,8 @@ var mkdirp = require('mkdirp'),
     rmdir = require('rmdir'),
     async = require('async'),
     crypto = require('crypto'),
-    backup = require('backup-node'),
-    BackupDirectory = backup.Directory;
+    bluebutton = require('app-node-bluebutton'),
+    BackupDirectory = bluebutton.Directory;
 
 var dbPath = config.get('db:path'),
     zipPath = config.get('db:download'),

@@ -50,7 +50,7 @@
     "superagent": "^2.3.0",
     "winston": "^2.3.0",
     "util": "latest",
-    "backup-node": "git://github.com/pryv/app-node-backup.git#4cde3a796cc39ec462f6100a3b6e73d6cd0c15b0",
+    "app-node-bluebutton": "git://github.com/pryv/app-node-backup.git#4cde3a796cc39ec462f6100a3b6e73d6cd0c15b0",
     "rmdir": "latest",
     "crypto": "latest",
     "lodash": "^4.17.2"
