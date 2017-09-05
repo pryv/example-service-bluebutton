@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <title>Pryv Service Backup</title>
+    <title>Pryv Service Bluebutton</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link href="./style.css" rel="stylesheet" type="text/css"/>
     <link href="./alert.css" rel="stylesheet" type="text/css"/>
@@ -15,16 +15,17 @@
     <div class="main">
         <h1>
             <img src="./img/iconPryv.png"><img>
-            Pryv Backup Service
+            Pryv Bluebutton Service
+            <img src="./img/bluebutton.jpg"><img>
         </h1>
 
         <div class="container">
             <div class="loginView">
-                <h2>Welcome to Pryv backup service!</h2>
+                <h2>Welcome to Pryv Bluebutton service!</h2>
 
                 <p>With this service, you will be able to backup your Pryv data on your computer.</p>
                 <p>The data will be exported as JSON files and packed inside a password protected zip.</p>
-
+                <p>To know more about Bluebutton, please see <a href="https://www.healthit.gov/patients-families/blue-button/about-blue-button">here</a>.
                 <p>Please choose the backup options, enter your Pryv credentials and hit the 'Backup' button:</p>
 
                 <div class="checkboxDiv">
@@ -43,8 +44,9 @@
                 <label>Password :</label>
                 <input type="password" name="password" id="password" placeholder="Enter your password.">
 
-                <button id="login">Backup</button>
             </div>
+            
+            <p><input id="login" type="image" src="./img/bluebutton.jpg" height="150px"/></p>
 
             <div class="consoleView">
                 <h2>Backup Status</h2>
@@ -55,12 +57,12 @@
                 <div class="backupDiv">
                     <h2>Download Backup File</h2>
                     <form method="get" action="">
-                        <button id="download">Download</button>
+                        <input id="download" type="image" src="./img/bluebutton.jpg" height="100px"/>
                     </form>
                 </div>
                 <div class="backupDiv">
                     <h2>Delete Backup File</h2>
-                    <button id="delete">Delete</button>
+                    <input id="delete" type="image" src="./img/delete.jpg" height="100px"/>
                 </div>
                 <p>You can now download your backup zip and unzip it by providing your Pryv password.</p>
                 <p>We recommend that you delete the backup files as soon as you have downloaded the zip file.</p>

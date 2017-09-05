@@ -30,7 +30,7 @@ module.exports = function (grunt) {
             expand: true,
             flatten: true,
             filter: 'isFile',
-            src: ['src/public_html/img/*.png'],
+            src: ['src/public_html/img/*.png', 'src/public_html/img/*.jpg'],
             dest: 'dist/img'
           }
         ]

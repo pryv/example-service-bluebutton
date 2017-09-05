@@ -6,6 +6,7 @@ module.exports.stateChange = function (state) {
   switch(state){
     case 'login':
       $('.loginView').show();
+      $('#login').show();
       $('.consoleView').hide();
       $('.backupView').hide();
       $('.doneView').hide();
@@ -13,6 +14,7 @@ module.exports.stateChange = function (state) {
       break;
     case 'running':
       $('.loginView').hide();
+      $('#login').hide();
       $('.consoleView').show();
       $('.alert').hide();
       break;

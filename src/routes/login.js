@@ -2,7 +2,7 @@ var express = require('express'),
     router = express.Router(),
     db = require('../storage/db'),
     config = require('../config'),
-    bluebutton = require('app-node-bluebutton'),
+    backup = require('app-node-backup'),
     _ = require('lodash');
 
 router.post('/', function (req, res) {
@@ -26,7 +26,7 @@ router.post('/', function (req, res) {
     'domain': domain
   };
 
-  bluebutton.signInToPryv(params, function(err, connection) {
+  backup.signInToPryv(params, function(err, connection) {
     if(err) {
       // Trick to return a user readable error in case of host not found
       if(err.indexOf && err.indexOf('ENOTFOUND') !== -1) {
@@ -48,7 +48,7 @@ router.post('/', function (req, res) {
         'includeTrashed' : (body.includeTrashed != 0)
         /* jshint ignore:end */
       };
-      bluebutton.startOnConnection(connection, params,
+      backup.startOnConnection(connection, params,
         _.bind(backupComplete, null, _, username, domain, password),
         _.bind(db.appendLog, null, username, domain));
       db.save(username, domain, 'running', true);
