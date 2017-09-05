@@ -3,7 +3,6 @@
 Bluebutton service for Pryv with simple web app.
 
 ![Bluebutton](http://www.healthit.gov/sites/default/files/consumer_big_blue/bb-logo-215x215.jpg "Bluebutton")
-[![Bluebutton](http://www.google.com.au/images/nav_logo7.png)](http://google.com.au/)
 
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
 Must be run behind a Nginx process handling the HTTPS encryption.
