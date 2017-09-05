@@ -34,18 +34,18 @@ run npm run release
 
 # Install the config file
 run mkdir -p $conf_dir && \
-  cp /pd_build/config/backup.json $conf_dir/backup.json
+  cp /pd_build/config/bluebutton.json $conf_dir/bluebutton.json
 
 # Create the log
 run mkdir -p $log_dir && \
-  touch $log_dir/backup.log && chown -R app:app $log_dir
+  touch $log_dir/bluebutton.log && chown -R app:app $log_dir
 
-# Create the data space (attachments/previews)
+# Create the data space (attachments)
 run mkdir -p $data_dir/attachments && chown -R app:app $data_dir
 
 # Install the script that runs the api service
-run mkdir /etc/service/backup
-run cp /pd_build/runit/backup /etc/service/backup/run
+run mkdir /etc/service/bluebutton
+run cp /pd_build/runit/bluebutton /etc/service/bluebutton/run
 
 # Have CRON run in this container
 run rm /etc/service/cron/down

@@ -2,7 +2,7 @@
 
 set -e
 
-# Builds 'service-backup' docker image with the version given below. 
+# Builds 'bluebutton' docker image with the version given below. 
 
 # Determine the build_tag and whether we need to release.
 scripts/build_name
@@ -37,11 +37,11 @@ tar cf build/release.tar \
   .
 popd
 
-echo "---------------------------- building backup -----------------------------"
-pushd backup
+echo "---------------------------- building bluebutton -----------------------------"
+pushd bluebutton
 cp ../release.tar .
-sudo docker build -f Dockerfile -t pryv/backup:$version .
-release "pryv/backup" $version
+sudo docker build -f Dockerfile -t pryv/bluebutton:$version .
+release "pryv/bluebutton" $version
 popd
 
 

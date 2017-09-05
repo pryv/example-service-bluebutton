@@ -12,4 +12,4 @@ cd /app/bin/
 
 export NODE_ENV=production
 export NODE_PATH=/app/bin/
-exec chpst -u app /usr/bin/node src/server --config /app/conf/backup.json
+exec chpst -u app /usr/bin/node src/server --config /app/conf/bluebutton.json

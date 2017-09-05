@@ -7,7 +7,7 @@ RUN /pd_build/install.sh
 VOLUME /app/data/db-files /app/data/backup
 
 # Ports:
-#   9000        backup api
+#   9000        bluebutton api
 #
 EXPOSE 9000
 
