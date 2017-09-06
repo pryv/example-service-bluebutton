@@ -13,9 +13,11 @@ $(document).ready(function(){
     if (key.which === 0) { $('.alert').hide(); }
   });
   $('#login').click(function(){
+    this.disabled = true;
     func.loginProcess();
   });
   $('#delete').click(function() {
+    this.disabled = true;
     func.deleteBackup();
   });
   $('#refresh').click(function() {
