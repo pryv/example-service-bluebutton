@@ -38,7 +38,7 @@ nconf.defaults({
     enforceDomain: true
   },
   http: {
-    port: '5780',
+    port: '9000',
     ip: '0.0.0.0' // interface to bind,
   },
   useRecLa: true,
@@ -46,7 +46,8 @@ nconf.defaults({
     middlewareDebug : true
   },
   airbrake: {
-    key: 'ToGenerateOne' // to generate one for bridge-domocare
+    key: 'ToGenerateOne',
+    projectId: 'ToGenerateOne'
   },
   pryvAccess: {  // access params of pryv.io token
     name: 'backup-service',

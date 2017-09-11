@@ -3,5 +3,9 @@
   "path": "/app/data/db-files/",
   "backup": "/app/data/backup/",
   "download": "/app/data/download/"
+  },
+  "http": {
+    "port": 9000,
+    "ip": "0.0.0.0"
   }
 }
