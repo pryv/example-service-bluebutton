@@ -9,7 +9,7 @@ Bluebutton service for Pryv with simple web app. Must be run behind a Nginx proc
 Prerequisites: **Node v.8+**,**yarn v0.27+** & **Docker v17+**
 
 - Install Node dependencies: `yarn install`
-- Generate web app: `node node_modules/grunt/bin/grunt` or `grunt` (if installed globally)
+- Generate web app: `yarn run gen-app`
 
 ### Docker image
 
