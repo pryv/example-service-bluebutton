@@ -7,14 +7,14 @@ Bluebutton service for Pryv with simple web app.
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
 Must be run behind a Nginx process handling the HTTPS encryption.
 
-## Install
+## Contribute
 
-### Node dependencies
+### Install
 
-Prerequisites: **Node**,**Npm** & **Docker**
+Prerequisites: **Node v.8+**,**yarn v0.27+** & **Docker v17+**
 
-- Install Node dependencies: `npm install`
-- Generate web app: `node node_modules/grunt/bin/grunt` or `grunt` (if installed globally)
+- Install Node dependencies: `yarn install`
+- Generate web app: `yarn run gen-app`
 
 ### Docker image
 

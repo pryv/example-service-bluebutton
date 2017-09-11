@@ -4,6 +4,7 @@
   "description": "Web service for clients to download all their data",
   "main": "src/app.js",
   "scripts": {
+    "gen-app": "node node_modules/grunt/bin/grunt",
     "start": "node src/server.js",
     "test": "mocha test/**/*.test.js",
     "grunt": "grunt",
