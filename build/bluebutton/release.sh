@@ -27,10 +27,10 @@ run apt-get update
 run apt-get --yes --force-yes install zip
 
 # Generate static html files using grunt
-run npm run grunt
+run yarn run grunt
 
 # Perform a release build of the source code. (-> lib)
-run npm run release
+run yarn run release
 
 # Install the config file
 run mkdir -p $conf_dir && \

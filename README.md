@@ -18,7 +18,7 @@ Prerequisites: **Node v.8+**,**yarn v0.27+** & **Docker v17+**
 
 ### Docker image
 
-Build it using `npm run docker-build`
+Build it using `yarn run docker-build`
 
 ## Run
 
