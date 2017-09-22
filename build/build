@@ -10,8 +10,6 @@ scripts/build_name
 version=$(cat build_tag)
 if [ -e release_build ]; then
   echo "This is a release build, it will update 'latest' tags."
-else
-  echo "This is not a release buid."
 fi
 
 function release {
