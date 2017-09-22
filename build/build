@@ -37,6 +37,15 @@ tar cf build/release.tar \
   .
 popd
 
+function checkRelease {
+  echo "docker images built"
+  if [ -e ../release_build ]; then
+    echo "release_build file exists in outer directory"
+  else
+    echo "release_build file not found"
+  fi
+
+}
 echo "---------------------------- building bluebutton -----------------------------"
 pushd bluebutton
 cp ../release.tar .
