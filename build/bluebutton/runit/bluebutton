@@ -3,10 +3,10 @@
 set -e
 
 mkdir -p /app/data/db-files
-chown -R app /app/data/db-files
-
 mkdir -p /app/data/backup
-chown -R app /app/data/backup
+
+chown -R app:app /app/data/
+chown app:app /app/log/
 
 cd /app/bin/
 
