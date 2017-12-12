@@ -1,6 +1,6 @@
 # Pryv Service Bluebutton
 
-Bluebutton service for Pryv with simple web app.
+Bluebutton service for Pryv with simple web app: https://bluebutton.pryv.me/
 
 ![Bluebutton](http://www.healthit.gov/sites/default/files/consumer_big_blue/bb-logo-215x215.jpg "Bluebutton")
 
