@@ -1,6 +1,6 @@
 {
   "name": "service-bluebutton",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "Web service for clients to download all their data",
   "main": "src/app.js",
   "scripts": {

@@ -34,7 +34,7 @@ if (configFile) {
 nconf.defaults({
   pryv: {
     domain : 'pryv.me',
-    appId: 'backup-test',
+    appId: 'bluebutton-app',
     enforceDomain: true
   },
   http: {
