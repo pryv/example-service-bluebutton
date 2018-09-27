@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <title>Riva oBPM Service Bluebutton</title>
+  <base href="https://bluebutton.pryv.me/">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="./style.css" rel="stylesheet" type="text/css" />
+  <link href="./alert.css" rel="stylesheet" type="text/css" />
+  <link href="./loginView.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="./script-browserify.js"></script>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <div class="main">
+      <h1>
+        Riva Bluebutton Service
+        <img src="./img/bluebutton.png"><img>
+      </h1>
+
+      <div class="container">
+        <div class="loginView">
+          <h2>Welcome to Riva Bluebutton service!</h2>
+
+          <p>With this service, you will be able to backup your Riva data on your computer.</p>
+          <p>The data will be exported as JSON files and packed inside a password protected zip.</p>
+          <p>Enter your Riva credentials and hit the 'Backup' button:</p>
+
+          <div class="checkboxDiv" style="display: none">
+            <input type="checkbox" name="trashed" id="trashed" class="choice" checked>
+            <label for="trashed" class="choice-label"><b>Include trashed data ?</b></label>
+            <br>
+          </div>
+          <div class="checkboxDiv" style="display: none">
+            <input type="checkbox" name="attachment" id="attachment" class="choice" checked>
+            <label for="attachment" class="choice-label"><b>Include attachments ?</b></label><br>
+          </div><br>
+
+          <label>Username :</label>
+          <input type="text" name="username" id="username" placeholder="Enter your username.">
+
+          <label>Password :</label>
+          <input type="password" name="password" id="password" placeholder="Enter your password.">
+
+        </div>
+
+        <p><input id="login" type="image" src="./img/bluebutton.png" height="150px" /></p>
+
+        <div class="consoleView">
+          <h2>Backup Status</h2>
+          <textarea id="console" cols="80" rows="10" value="" readonly="readonly"></textarea>
+        </div>
+
+        <div class="backupView">
+          <div class="backupDiv">
+            <h2>Download Backup File</h2>
+            <form method="get" action="">
+              <input id="download" type="image" src="./img/bluebutton.png" height="100px" />
+            </form>
+          </div>
+          <div class="backupDiv">
+            <h2>Delete Backup File</h2>
+            <input id="delete" type="image" src="./img/delete.png" height="100px" />
+          </div>
+          <p>You can now download your backup zip and unzip it by providing your Riva password.</p>
+          <p>We recommend that you delete the backup files as soon as you have downloaded the zip file.</p>
+          <p>Moreover, you have to delete the backup files if you want to start another backup.</p>
+        </div>
+
+        <div class="doneView">
+          <p id="doneMessage">Your backup has successfully been deleted.<br> You can refresh this page to start another backup.</p>
+          <button id="refresh">Refresh</button>
+        </div>
+      </div>
+
+      <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <p id="alertMessage"></p>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
