@@ -20,6 +20,7 @@ router.post('/', function (req, res) {
   if(db.infos(username, domain).token === body.token) {
     db.watchLog(username, domain, function(log, end) {
       res.write(log);
+      res.flushHeaders();
       if(end) {
         db.unwatchLog(username, domain);
         res.end('END');
