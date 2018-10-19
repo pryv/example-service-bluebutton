@@ -146,6 +146,7 @@ module.exports.deleteBackup = function (username, domain, callback) {
 };
 
 module.exports.createZip = function (username, domain, password, callback) {
+  module.exports.appendLog(username, domain, 'Creating backup archive...');
   var token = module.exports.infos(username, domain).token;
   var hash = crypto.createHash('md5').update(token).digest('hex');
   var file = hash + '.zip';
@@ -156,10 +157,12 @@ module.exports.createZip = function (username, domain, password, callback) {
   var spawn = require('child_process').spawn;
   var zipCmd = spawn('zip',['-P', password , path.normalize(zipPath + '/' +file),
     '-r', './'], {cwd: backupDir});
-
+  zipCmd.stdout.on('data', function(data) {
+    module.exports.appendLog(username, domain, data);
+  });
   zipCmd.on('exit', function(code) {
     if(code !== 0) {
-      return callback('Zip creation error');
+      return callback('Archive creation error');
     }
     zipFiles[userDomainPath(username, domain)] = file;
 
