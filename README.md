@@ -7,6 +7,13 @@ Bluebutton service for Pryv with simple web app: https://bluebutton.pryv.me/
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
 Must be run behind a Nginx process handling the HTTPS encryption.
 
+
+
+Note: BlueButton serice is based on Pryv's command line backup tool 
+ https://github.com/pryv/app-node-backup
+
+
+
 ## Contribute
 
 ### Install
