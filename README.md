@@ -63,3 +63,7 @@ The production setup requires a configuration file `service-bluebutton.config.js
 #### Run tests
 
 Use `npm test` to run the tests
+
+## License
+
+BSD-Revised
