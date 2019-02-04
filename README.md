@@ -7,59 +7,49 @@ Bluebutton service for Pryv with simple web app: https://bluebutton.pryv.me/
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
 Must be run behind a Nginx process handling the HTTPS encryption.
 
-## Contribute
-
-### Install
+## Install
 
 Prerequisites: **Node v.8+**,**yarn v0.27+** & **Docker v17+**
 
-- Install Node dependencies: `yarn install`
-- Generate web app: `yarn run gen-app`
+_Note: to use the bluebutton Docker image, you will require a valid Licence.
+If you don't have one, please contact Pryv Sales department._
 
-### Docker image
+Throughout this procedure, you will have to replace some configuration values, we will refer to them with the following variables:
+- PRYVIO_DOMAIN: the domain managed by your Pryv.io installation.
+- BLUEBUTTON_CONFIG_FOLDER: configuration folder that will hold the configuration file (bluebutton.json) created below, make sure to create this folder if not existing.
+- BLUEBUTTON_DATA_FOLDER: data folder where the backup files will be stored until the user download them, make sure to create this folder if not existing.
+- BLUEBUTTON_PORT: the port on which you decide to have the Bluebutton service accessible.
 
-Build it using `yarn run docker-build`
-
-## Run
-
-### Production
-
-The production setup requires a configuration file `service-bluebutton.config.json` with the following fields:
-
+Create the configuration file `${BLUEBUTTON_CONFIG_FOLDER}/bluebutton.json`, with the following content :
 ```
 {
-	"pryv": {
-		"domain": "pryv.me"
-	},
-	"db": {
-    "path": "/var/pryv/data/service-bluebutton/db-files/",
-    "backup": "/var/pryv/data/service-bluebutton/backup/",
-    "download": "/var/pryv/data/service-bluebutton/download/"
+  "pryv": {
+    "domain": "${PRYVIO_DOMAIN}"
+  },
+  "db": {
+    "path": "/app/data/db-files/",
+    "backup": "/app/data/backup/",
+    "download": "/app/data/download/"
+  },
+  "http": {
+    "port": 9000,
+    "ip": "0.0.0.0"
   }
 }
 ```
 
-- Build the image using `./scripts/docker-build.sh`
+Create and run the docker container with the following command line, replacing the variables with your own values :
 
-- Run the container using `./script/docker-run.sh ${PathToConfigDir}`
+```shell
+$ sudo docker run -d --name pryv_bluebutton -p ${BLUEBUTTON_PORT}:9000 -v ${BLUEBUTTON_DATA_FOLDER}:/app/data/ -v ${BLUEBUTTON_CONFIG_FOLDER}:/app/conf/:ro -ti pryvsa-docker-release.bintray.io/pryv/bluebutton:1.0.11
+```
 
-- Open the following link in a browser: [http://127.0.0.1:5880](http://127.0.0.1:5880)
+Open your web browser and reach the address of the server on which this service is running, with the port you decided upon to display the Bluebutton web interface.
 
-### Development
+## Contribute
 
-#### Node app
-
-- At the root of the repository, run: `npm start`
-- Open the following link in a browser: [http://0.0.0.0:5780](http://0.0.0.0:5780) **(Warning: app accessible from anyone on the same subnet)**
-
-#### Docker container 
-
-- Build image `npm run docker-build`
-
-- Run container `npm run docker-run`
-
-- Open the following link in a browser: [http://127.0.0.1:5880](http://127.0.0.1:5880)
-
-#### Run tests
-
-Use `npm test` to run the tests
+- Install Node dependencies: `yarn install`
+- Build the web app: `yarn build`
+- Start the dev server: `yarn start`
+- Open the following link in a browser: [http://0.0.0.0:http://0.0.0.0:9000](http://0.0.0.0:http://0.0.0.0:9000)
+- To run the tests, use `yarn test`
