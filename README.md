@@ -6,22 +6,22 @@ Bluebutton service for Pryv with simple web app: https://bluebutton.pryv.me/
 
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
 
-Note: Bluebtton service is based on Pryv's command line backup tool 
- https://github.com/pryv/app-node-backup. Also, we expect it to be run behind a Nginx process handling the HTTPS encryption.
+_Note: Bluebutton service is based on Pryv's command line backup tool 
+ https://github.com/pryv/app-node-backup. Also, we expect it to be run behind a Nginx process handling the HTTPS encryption._
 
 
 ## Install
 
 Prerequisites: **Node v.8+**,**yarn v0.27+** & **Docker v17+**
 
-_Note: to use the bluebutton Docker image, you will require a valid Licence.
+_Note: to use the Bluebutton Docker image, you will need a valid Licence.
 If you don't have one, please contact Pryv Sales department._
 
 Throughout this procedure, you will have to replace some configuration values, we will refer to them with the following variables:
-- PRYVIO_DOMAIN: the domain managed by your Pryv.io installation.
-- BLUEBUTTON_CONFIG_FOLDER: configuration folder that will hold the configuration file (bluebutton.json) created below, make sure to create this folder if not existing.
-- BLUEBUTTON_DATA_FOLDER: data folder where the backup files will be stored until the user download them, make sure to create this folder if not existing.
-- BLUEBUTTON_PORT: the port on which you decide to have the Bluebutton service accessible.
+- **PRYVIO_DOMAIN**: the domain managed by your Pryv.io installation.
+- **BLUEBUTTON_CONFIG_FOLDER**: configuration folder that will hold the configuration file (bluebutton.json) created below, make sure to create this folder if not existing.
+- **BLUEBUTTON_DATA_FOLDER**: data folder where the backup files will be stored until the user download them, make sure to create this folder if not existing.
+- **BLUEBUTTON_PORT**: the port on which you decide to have the Bluebutton service accessible.
 
 Create the configuration file `${BLUEBUTTON_CONFIG_FOLDER}/bluebutton.json`, with the following content :
 ```
