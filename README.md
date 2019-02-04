@@ -5,7 +5,10 @@ Bluebutton service for Pryv with simple web app: https://bluebutton.pryv.me/
 ![Bluebutton](http://www.healthit.gov/sites/default/files/consumer_big_blue/bb-logo-215x215.jpg "Bluebutton")
 
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
-Must be run behind a Nginx process handling the HTTPS encryption.
+
+Note: Bluebtton service is based on Pryv's command line backup tool 
+ https://github.com/pryv/app-node-backup. Also, we expect it to be run behind a Nginx process handling the HTTPS encryption.
+
 
 ## Install
 
@@ -53,3 +56,7 @@ Open your web browser and reach the address of the server on which this service 
 - Start the dev server: `yarn start`
 - Open the following link in a browser: [http://0.0.0.0:http://0.0.0.0:9000](http://0.0.0.0:http://0.0.0.0:9000)
 - To run the tests, use `yarn test`
+
+## License
+
+BSD-Revised
