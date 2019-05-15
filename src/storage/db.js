@@ -10,7 +10,7 @@ var mkdirp = require('mkdirp'),
     config = require('../config'),
     fs = require('fs'),
     path = require('path'),
-    rmdir = require('rmdir'),
+    exec = require('child_process').exec
     async = require('async'),
     crypto = require('crypto'),
     backup = require('app-node-backup'),
@@ -114,7 +114,7 @@ module.exports.deleteBackup = function (username, domain, callback) {
     function removeInfos(stepDone) {
       var userDir = path.normalize(dbPath + '/' + userDomainPath(username, domain));
       if(fs.existsSync(userDir)) {
-        return rmdir(userDir, stepDone);
+        return exec('rm -r ' + userDir, stepDone);
       } else {
         stepDone();
       }
