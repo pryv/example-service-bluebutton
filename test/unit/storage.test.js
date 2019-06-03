@@ -4,7 +4,7 @@ var should = require('should'),
     async = require('async'),
     fs = require('fs'),
     mkdirp = require('mkdirp'),
-    rmdir = require('rmdir'),
+    exec = require('child_process').exec
     path = require('path'),
     crypto = require('crypto');
 
@@ -40,7 +40,7 @@ describe('Storage', function () {
         stepDone();
       },
       function clean(stepDone) {
-        rmdir(dbPath, stepDone);
+        exec('rm -r ' + dbPath, stepDone);
       }
     ], done);
   });
@@ -66,7 +66,7 @@ describe('Storage', function () {
         stepDone();
       },
       function clean(stepDone) {
-        rmdir(dbPath, stepDone);
+        exec('rm -r ' + dbPath, stepDone);
       }
     ], done);
   });
@@ -78,7 +78,7 @@ describe('Storage', function () {
       should.equal(log, message + '\n');
       if (end) {
         db.unwatchLog(credentials.username, domain);
-        rmdir(dbPath, done);
+        exec('rm -r ' + dbPath, done);
       }
     });
     db.appendLog(credentials.username, domain, message, true);
@@ -101,7 +101,7 @@ describe('Storage', function () {
         stepDone();
       },
       function clean(stepDone) {
-        rmdir(dbPath, stepDone);
+        exec('rm -r ' + dbPath, stepDone);
       }
     ], done);
   });
