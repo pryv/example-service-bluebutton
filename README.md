@@ -35,7 +35,7 @@ Create the configuration file `${BLUEBUTTON_CONFIG_FOLDER}/bluebutton.json`, wit
     "download": "/app/data/download/"
   },
   "http": {
-    "port": 9000,
+    "port": 9001,
     "ip": "0.0.0.0"
   }
 }
@@ -44,7 +44,7 @@ Create the configuration file `${BLUEBUTTON_CONFIG_FOLDER}/bluebutton.json`, wit
 Create and run the docker container with the following command line, replacing the variables with your own values :
 
 ```shell
-$ sudo docker run -d --name pryv_bluebutton -p ${BLUEBUTTON_PORT}:9000 -v ${BLUEBUTTON_DATA_FOLDER}:/app/data/ -v ${BLUEBUTTON_CONFIG_FOLDER}:/app/conf/:ro -ti pryvsa-docker-release.bintray.io/pryv/bluebutton:1.0.11
+$ sudo docker run -d --name pryv_bluebutton -p ${BLUEBUTTON_PORT}:9001 -v ${BLUEBUTTON_DATA_FOLDER}:/app/data/ -v ${BLUEBUTTON_CONFIG_FOLDER}:/app/conf/:ro -ti pryvsa-docker-release.bintray.io/pryv/bluebutton:1.0.11
 ```
 
 Open your web browser and reach the address of the server on which this service is running, with the port you decided upon to display the Bluebutton web interface.
@@ -54,7 +54,7 @@ Open your web browser and reach the address of the server on which this service 
 - Install Node dependencies: `yarn install`
 - Build the web app: `yarn build`
 - Start the dev server: `yarn start`
-- Open the following link in a browser: [http://0.0.0.0:http://0.0.0.0:9000](http://0.0.0.0:http://0.0.0.0:9000)
+- Open the following link in a browser: [http://0.0.0.0:9001](http://0.0.0.0:9001)
 - To run the tests, use `yarn test`
 
 ## License

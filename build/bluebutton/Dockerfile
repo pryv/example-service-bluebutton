@@ -1,4 +1,4 @@
-FROM pryv/base:1.2.13
+FROM pryvsa-docker-release.bintray.io/pryv/base:1.2.13
 MAINTAINER "Tech@Pryv" <tech@pryv.com>
 
 RUN echo '### Dockerfile starts ###'
@@ -9,7 +9,7 @@ RUN /pd_build/install.sh
 VOLUME /app/data/db-files /app/data/backup
 
 # Ports:
-#   9000        bluebutton api
+#   9001        bluebutton api
 #
-EXPOSE 9000
+EXPOSE 9001
 

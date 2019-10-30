@@ -38,7 +38,7 @@ nconf.defaults({
     enforceDomain: true
   },
   http: {
-    port: '9000',
+    port: '9001',
     ip: '0.0.0.0' // interface to bind,
   },
   useRecLa: true,
