@@ -30,6 +30,8 @@ var invalidCredentials = {
 require('../../src/server');
 
 describe('Backup', function () {
+  this.timeout(5000);
+
   before(async () => {
     const serviceInfoRes = await superagent.get(serviceInfoUrl);
     const apiUrl = serviceInfoRes.body.api.replace('{username}', 'testuser');
