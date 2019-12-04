@@ -9,13 +9,18 @@ router.post('/', async function (req, res) {
   const body = req.body;
   const password = body.password;
   const username = body.username;
-  let domain = null;
 
   if (! username || ! password) {
     return res.status(400).send('Please provide your username and password');
   }
 
-  const serviceInfoUrl = config.get('pryv:serviceInfoUrl');
+  let serviceInfoUrl;
+  if(!config.get('pryv:enforceDomain') && body.serviceInfoUrl) {
+    serviceInfoUrl = body.serviceInfoUrl;
+  } else {
+    serviceInfoUrl = config.get('pryv:serviceInfoUrl');
+  }
+
   var params = {
     'username': username,
     'password': password,
@@ -25,17 +30,13 @@ router.post('/', async function (req, res) {
   backup.signInToPryv(params, function(err, connection) {
     if(err) {
       // Trick to return a user readable error in case of host not found
-      if(err.indexOf && err.indexOf('ENOTFOUND') !== -1) {
+      if(err.code && err.code.indexOf && err.code.indexOf('ENOTFOUND') !== -1) {
         err = 'Username not found';
       }
       return res.status(400).send(err);
     }
 
-    if(!config.get('pryv:enforceDomain') && body.domain) {
-      domain = body.domain;
-    } else {
-      domain = connection.settings.domain;
-    }
+    const domain = connection.settings.domain;
     config.set('pryv:domain', domain);
 
     // Save token
@@ -48,8 +49,9 @@ router.post('/', async function (req, res) {
         'backupDirectory' : db.backupDir(username, domain),
         /* jshint ignore:start */
         'includeAttachments' : (body.includeAttachments != 0),
-        'includeTrashed' : (body.includeTrashed != 0)
+        'includeTrashed' : (body.includeTrashed != 0),
         /* jshint ignore:end */
+        'apiUrl' : connection.apiUrl
       };
       backup.startOnConnection(connection, params,
         _.bind(backupComplete, null, _, username, domain, password),
