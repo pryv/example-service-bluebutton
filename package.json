@@ -52,6 +52,7 @@
     "util": "latest",
     "app-node-backup": "git://github.com/pryv/app-node-backup.git",
     "crypto": "latest",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "parse-domain": "^2.3.4"
   }
 }

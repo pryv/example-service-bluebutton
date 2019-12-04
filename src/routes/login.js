@@ -1,29 +1,26 @@
-var express = require('express'),
-    router = express.Router(),
-    db = require('../storage/db'),
-    config = require('../config'),
-    backup = require('app-node-backup'),
-    _ = require('lodash');
+const express = require('express');
+const router = express.Router();
+const db = require('../storage/db');
+const config = require('../config');
+const backup = require('app-node-backup');
+const _ = require('lodash');
+// const serviceInfo = require('../utils/serviceInfo.js');
 
-router.post('/', function (req, res) {
-
-  var body = req.body,
-      password = body.password,
-      username = body.username,
-      domain = config.get('pryv:domain');
-
-  if(!config.get('pryv:enforceDomain') && body.domain) {
-    domain = body.domain;
-  }
+router.post('/', async function (req, res) {
+  const body = req.body;
+  const password = body.password;
+  const username = body.username;
+  let domain = null;
 
   if (! username || ! password) {
     return res.status(400).send('Please provide your username and password');
   }
 
+  const serviceInfoUrl = config.get('pryv:serviceInfoUrl');
   var params = {
     'username': username,
     'password': password,
-    'domain': domain
+    'serviceInfoUrl': serviceInfoUrl
   };
 
   backup.signInToPryv(params, function(err, connection) {
@@ -34,6 +31,13 @@ router.post('/', function (req, res) {
       }
       return res.status(400).send(err);
     }
+
+    if(!config.get('pryv:enforceDomain') && body.domain) {
+      domain = body.domain;
+    } else {
+      domain = connection.settings.domain;
+    }
+    config.set('pryv:domain', domain);
 
     // Save token
     var token = connection.auth;
