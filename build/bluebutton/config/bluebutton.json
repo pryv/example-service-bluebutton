@@ -2,7 +2,8 @@
   "db": {
   "path": "/app/data/db-files/",
   "backup": "/app/data/backup/",
-  "download": "/app/data/download/"
+  "download": "/app/data/download/",
+  "serviceInfoUrl": "https://reg.pryv.me/service/info"
   },
   "http": {
     "port": 9000,

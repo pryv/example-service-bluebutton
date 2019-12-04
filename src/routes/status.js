@@ -13,10 +13,6 @@ router.post('/', function (req, res) {
       username = body.username,
       domain = config.get('pryv:domain');
 
-  if(!config.get('pryv:enforceDomain') && body.domain) {
-    domain = body.domain;
-  }
-
   if(db.infos(username, domain).token === body.token) {
     db.watchLog(username, domain, function(log, end) {
       res.write(log);

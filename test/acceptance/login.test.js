@@ -1,32 +1,47 @@
-/*global describe, it*/
+/*global before, describe, it*/
 
-var request = require('superagent'),
-    should = require('should'),
-    config = require('../../src/config'),
-    db = require('../../src/storage/db'),
-    testUser = require('../data/testUser.json'),
-    fs = require('fs'),
-    path = require('path');
+const request = require('superagent');
+const should = require('should');
+const config = require('../../src/config');
+const db = require('../../src/storage/db');
+const testUser = require('../data/testUser.json');
+const fs = require('fs');
+const path = require('path');
+const superagent = require('superagent');
+const parseDomain = require('parse-domain');
 
 var serverBasePath = 'http://' + config.get('http:ip') + ':' + config.get('http:port');
 
-var domain = config.get('pryv:domain');
+const serviceInfoUrl = config.get('pryv:serviceInfoUrl');
+let domain = null;
 
 var validCredentials = {
   username: testUser.username,
   password: testUser.password,
-  domain : domain
+  domain : null
 };
 
 var invalidCredentials = {
   username: testUser.username,
   password: 'blabla',
-  domain: domain
+  domain: null
 };
 
 require('../../src/server');
 
 describe('Backup', function () {
+  this.timeout(5000);
+
+  before(async () => {
+    const serviceInfoRes = await superagent.get(serviceInfoUrl);
+    const apiUrl = serviceInfoRes.body.api.replace('{username}', 'testuser');
+
+    const parsedDomain = parseDomain(apiUrl);
+    domain = parsedDomain.domain + '.' + parsedDomain.tld;
+
+    validCredentials.domain = domain;
+    invalidCredentials.domain = domain;
+  });
 
   it('should backup all data in a zip when credentials are valid', function (done) {
     db.watchLog(testUser.username, domain, function(message, end) {

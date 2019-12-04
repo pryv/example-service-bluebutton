@@ -4,6 +4,7 @@ var nconf = require('nconf'),
 
 module.exports = nconf;
 
+nconf.use('memory');
 nconf.argv().env();
 
 var configFile = null;
@@ -33,7 +34,7 @@ if (configFile) {
 // Set default values
 nconf.defaults({
   pryv: {
-    domain : 'pryv.me',
+    serviceInfoUrl : 'https://reg.pryv.me/service/info',
     appId: 'bluebutton-app',
     enforceDomain: true
   },

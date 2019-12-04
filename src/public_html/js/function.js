@@ -4,7 +4,6 @@ var $ = require('jquery'),
   display = require('./display');
 
 var last_index = 0,
-  domain = null,
   username = '',
   password = '',
   token = '';
@@ -20,16 +19,17 @@ module.exports.loginProcess = function() {
     display.alertDisplay('You must enter your username and password !');
   } else {
 
-    var search = new RegExp('[?&]'+encodeURIComponent('domain')+'=([^&]*)').exec(window.location.search);
+    var search = new RegExp('[?&]'+encodeURIComponent('serviceInfoUrl')+'=([^&]*)').exec(window.location.search);
+    let serviceInfoUrl = null;
     if (search && search[1]) {
-      domain = decodeURIComponent(search[1]);
+      serviceInfoUrl = decodeURIComponent(search[1]);
     }
 
     var data = { username: username,
       password: password,
       includeTrashed: $('#trashed:checked').length,
       includeAttachments: $('#attachment:checked').length,
-      domain: domain
+      serviceInfoUrl: serviceInfoUrl
     };
 
     ajaxPost('/login', data, function (res) {
@@ -46,7 +46,7 @@ module.exports.loginProcess = function() {
 };
 
 module.exports.deleteBackup = function () {
-  ajaxPost('/delete', { username: username, domain: domain, token: token}, function (res) {
+  ajaxPost('/delete', { username: username, token: token}, function (res) {
     if (res) {
       display.stateChange('done');
     }
@@ -86,7 +86,7 @@ function readStatus(username) {
     checkLog(str);
   };
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  xhr.send(JSON.stringify({username: username, domain:domain, token: token}));
+  xhr.send(JSON.stringify({username: username, token: token}));
 }
 
 function checkLog(str) {
