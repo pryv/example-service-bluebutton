@@ -4,7 +4,6 @@ const db = require('../storage/db');
 const config = require('../config');
 const backup = require('app-node-backup');
 const _ = require('lodash');
-// const serviceInfo = require('../utils/serviceInfo.js');
 
 router.post('/', async function (req, res) {
   const body = req.body;
