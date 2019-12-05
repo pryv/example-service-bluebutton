@@ -44,7 +44,7 @@ Create the configuration file `${BLUEBUTTON_CONFIG_FOLDER}/bluebutton.json`, wit
 Create and run the docker container with the following command line, replacing the variables with your own values :
 
 ```shell
-$ sudo docker run -d --name pryv_bluebutton -p ${BLUEBUTTON_PORT}:9000 -v ${BLUEBUTTON_DATA_FOLDER}:/app/data/ -v ${BLUEBUTTON_CONFIG_FOLDER}:/app/conf/:ro -ti pryvsa-docker-release.bintray.io/pryv/bluebutton:1.0.11
+$ sudo docker run -d --name pryv_bluebutton -p ${BLUEBUTTON_PORT}:9000 -v ${BLUEBUTTON_DATA_FOLDER}:/app/data/ -v ${BLUEBUTTON_CONFIG_FOLDER}:/app/conf/:ro -ti pryvsa-docker-release.bintray.io/pryv/bluebutton:1.0.15
 ```
 
 Open your web browser and reach the address of the server on which this service is running, with the port you decided upon to display the Bluebutton web interface.
