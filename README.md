@@ -27,7 +27,7 @@ Create the configuration file `${BLUEBUTTON_CONFIG_FOLDER}/bluebutton.json`, wit
 ```
 {
   "pryv": {
-    "domain": "${PRYVIO_DOMAIN}"
+    "serviceInfoUrl": "${SERVICE_INFO_URL}"
   },
   "db": {
     "path": "/app/data/db-files/",
@@ -54,7 +54,7 @@ Open your web browser and reach the address of the server on which this service 
 - Install Node dependencies: `yarn install`
 - Build the web app: `yarn build`
 - Start the dev server: `yarn start`
-- Open the following link in a browser: [http://0.0.0.0:http://0.0.0.0:9000](http://0.0.0.0:http://0.0.0.0:9000)
+- Open the following link in a browser: [http://0.0.0.0:9000](http://0.0.0.0:9000)
 - To run the tests, use `yarn test`
 
 ## License
