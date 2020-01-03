@@ -34,7 +34,7 @@ if (configFile) {
 // Set default values
 nconf.defaults({
   pryv: {
-    serviceInfoUrl : 'https://reg.pryv.me/service/info',
+    serviceInfoUrl : 'https://reg.pryv.li/service/info',
     appId: 'bluebutton-app',
     enforceDomain: true
   },
