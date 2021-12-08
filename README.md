@@ -1,13 +1,13 @@
-# Pryv Service Bluebutton
+# Pryv "blue button" service
 
-Bluebutton service for Pryv with simple web app: https://bluebutton.pryv.me/
+Example "blue button" service & web app for users to download all their data. See Pryv Lab instance: https://bluebutton.pryv.me/
 
 ![Bluebutton](http://www.healthit.gov/sites/default/files/consumer_big_blue/bb-logo-215x215.jpg "Bluebutton")
 
 To know more about Bluebutton, see [here](https://www.healthit.gov/patients-families/blue-button/about-blue-button).
 
 _Note: Bluebutton service is based on Pryv's command line backup tool 
- https://github.com/pryv/app-node-backup. Also, we expect it to be run behind a Nginx process handling the HTTPS encryption._
+ https://github.com/pryv/pryv-account-backup. Also, we expect it to be run behind a Nginx process handling the HTTPS encryption._
 
 
 ## Install
