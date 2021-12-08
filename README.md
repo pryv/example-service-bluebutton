@@ -1,6 +1,6 @@
-# Pryv "blue button" service
+# Pryv Bluebutton service
 
-Example "blue button" service & web app for users to download all their data. See Pryv Lab instance: https://bluebutton.pryv.me/
+Example Bluebutton service & web app for users to download all their data. See Pryv Lab instance: https://bluebutton.pryv.me/
 
 ![Bluebutton](http://www.healthit.gov/sites/default/files/consumer_big_blue/bb-logo-215x215.jpg "Bluebutton")
 
