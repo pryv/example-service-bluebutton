@@ -286,6 +286,20 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@pryv/account-backup@git://github.com/pryv/pryv-account-backup.git":
+  version "0.1.2"
+  resolved "git://github.com/pryv/pryv-account-backup.git#d8202d2d89e4710b851a0d7fad3c2043db9c283e"
+  dependencies:
+    JSONStream "^1.3.4"
+    async "~0.9.0"
+    lodash "^4.16.0"
+    mkdirp "~0.5.0"
+    nconf "^0.6.x"
+    parse-domain "^2.3.4"
+    read "^1.0.7"
+    superagent "^3.5.0"
+    winston "^0.6.x"
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
@@ -521,20 +535,6 @@ anymatch@^2.0.0:
   dependencies:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
-
-"app-node-backup@git://github.com/pryv/app-node-backup.git":
-  version "0.1.2"
-  resolved "git://github.com/pryv/app-node-backup.git#dbed5bc49dc548b955a267bbfb9e1b92d2efeba8"
-  dependencies:
-    JSONStream "^1.3.4"
-    async "~0.9.0"
-    lodash "^4.16.0"
-    mkdirp "~0.5.0"
-    nconf "^0.6.x"
-    parse-domain "^2.3.4"
-    read "^1.0.7"
-    superagent "^3.5.0"
-    winston "^0.6.x"
 
 aproba@^1.0.3:
   version "1.2.0"

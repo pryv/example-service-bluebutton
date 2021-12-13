@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../storage/db');
 const config = require('../config');
-const backup = require('app-node-backup');
+const backup = require('@pryv/account-backup');
 const _ = require('lodash');
 
 router.post('/', async function (req, res) {

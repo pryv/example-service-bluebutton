@@ -13,7 +13,7 @@ var mkdirp = require('mkdirp'),
     exec = require('child_process').exec
     async = require('async'),
     crypto = require('crypto'),
-    backup = require('app-node-backup'),
+    backup = require('@pryv/account-backup'),
     BackupDirectory = backup.Directory;
 
 var dbPath = config.get('db:path'),
