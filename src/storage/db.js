@@ -16,6 +16,8 @@ var mkdirp = require('mkdirp'),
     backup = require('@pryv/account-backup'),
     BackupDirectory = backup.Directory;
 
+const { extractTokenAndAPIEndpoint } = require('pryv').utils;
+
 var dbPath = config.get('db:path'),
     zipPath = config.get('db:download'),
     backupPath = config.get('db:backup');
@@ -32,9 +34,10 @@ var infosCache = {},
 
 module.exports.load = function () {
   var ls = fs.readdirSync(dbPath);
-  ls.forEach(function (endpoint) {
-    if (fs.statSync(userDbPath(endpoint)).isDirectory()) {
-      infosCache[endpoint] = require(userDbPath(endpoint, 'infos.json'));
+  ls.forEach(function (key) {
+    if (fs.statSync(path.normalize(dbPath + '/' + key)).isDirectory()) {
+      const content = require(path.normalize(dbPath + '/' + key + '/infos.json'));
+      infosCache[key] = content;
     }
   });
   console.log('Loaded ' + Object.keys(infosCache).length + ' users.');
@@ -47,11 +50,13 @@ module.exports.load = function () {
  * @param key
  * @param value
  */
-module.exports.save = function (username, domain, key, value) {
-  infosCache[userDomainPath(username, domain)] = infosCache[userDomainPath(username, domain)] || {};
-  infosCache[userDomainPath(username, domain)][key] = value;
-  var infos = userDbPath(userDomainPath(username, domain),'infos.json');
-  fs.writeFileSync(infos, JSON.stringify(infosCache[userDomainPath(username, domain)]));
+module.exports.save = function (apiEndpoint, key, value) {
+  const apiKey = keyFromEndpoint(apiEndpoint);
+  infosCache[apiKey] = infosCache[apiEndpoint] || {};
+  infosCache[apiKey][key] = value;
+  infosCache[apiKey].apiEndpoint = apiEndpoint;
+  var infos = userDbPath(apiEndpoint,'infos.json');
+  fs.writeFileSync(infos, JSON.stringify(infosCache[apiKey]));
 };
 
 /**
@@ -60,8 +65,8 @@ module.exports.save = function (username, domain, key, value) {
  * @param username
  * @returns {*}
  */
-module.exports.log = function (username, domain) {
-  var file = userDbPath(userDomainPath(username, domain), 'log.json');
+module.exports.log = function (apiEndpoint) {
+  var file = userDbPath(apiEndpoint, 'log.json');
   return fs.readFileSync(file, 'utf-8');
 };
 
@@ -72,9 +77,9 @@ module.exports.log = function (username, domain) {
  * @param message
  * @param end       {Boolean} true if backup is finished, false otherwise
  */
-module.exports.appendLog = function (username, domain, message, end) {
-  fs.writeFileSync(userDbPath(userDomainPath(username, domain), 'log.json'), message + '\n', {'flag': 'a'});
-  var watcher = watchers[userDomainPath(username, domain)];
+module.exports.appendLog = function (apiEndpoint, message, end) {
+  fs.writeFileSync(userDbPath(apiEndpoint, 'log.json'), message + '\n', {'flag': 'a'});
+  var watcher = watchers[keyFromEndpoint(apiEndpoint)];
   if (typeof watcher === 'function') {
     watcher(message + '\n', end);
   }
@@ -86,8 +91,8 @@ module.exports.appendLog = function (username, domain, message, end) {
  * @param username {String}
  * @param notify   {Function} callback for the notification
  */
-module.exports.watchLog = function (username, domain, notify) {
-  watchers[userDomainPath(username, domain)] = notify;
+module.exports.watchLog = function (apiEndpoint, notify) {
+  watchers[keyFromEndpoint(apiEndpoint)] = notify;
 };
 
 /**
@@ -95,8 +100,8 @@ module.exports.watchLog = function (username, domain, notify) {
  *
  * @param username
  */
-module.exports.unwatchLog = function (username, domain) {
-  watchers[userDomainPath(username, domain)] = null;
+module.exports.unwatchLog = function (apiEndpoint) {
+  watchers[keyFromEndpoint(apiEndpoint)] = null;
 };
 
 /**
@@ -105,14 +110,15 @@ module.exports.unwatchLog = function (username, domain) {
  * @param username
  * @returns {*}
  */
-module.exports.infos = function (username, domain) {
-  return infosCache[userDomainPath(username, domain)];
+module.exports.infos = function (apiEndpoint) {
+  return infosCache[keyFromEndpoint(apiEndpoint)];
 };
 
-module.exports.deleteBackup = function (username, domain, callback) {
+module.exports.deleteBackup = function (apiEndpoint, callback) {
+  const apiKey = keyFromEndpoint(apiEndpoint)
   async.series([
     function removeInfos(stepDone) {
-      var userDir = path.normalize(dbPath + '/' + userDomainPath(username, domain));
+      var userDir = path.normalize(dbPath + '/' + apiKey);
       if(fs.existsSync(userDir)) {
         return exec('rm -r ' + userDir, stepDone);
       } else {
@@ -120,67 +126,70 @@ module.exports.deleteBackup = function (username, domain, callback) {
       }
     },
     function removeInfosCache(stepDone) {
-      if(infosCache[userDomainPath(username, domain)]) {
-        delete infosCache[userDomainPath(username, domain)];
+      if(infosCache[apiKey]) {
+        delete infosCache[apiKey];
       }
       stepDone();
     },
     function removeData(stepDone) {
-      module.exports.backupDir(username, domain).deleteDirs(stepDone);
+      module.exports.backupDir(apiEndpoint).deleteDirs(stepDone);
     },
     function removeZip(stepDone) {
-      var zip = path.normalize(zipPath + '/' + zipFiles[userDomainPath(username, domain)]);
-      if(zipFiles[userDomainPath(username, domain)] && fs.existsSync(zip)) {
+      var zip = path.normalize(zipPath + '/' + zipFiles[apiKey]);
+      if(zipFiles[apiKey] && fs.existsSync(zip)) {
         fs.unlink(zip, stepDone);
       } else {
         stepDone();
       }
     },
     function removeZipCache(stepDone){
-      if(zipFiles[userDomainPath(username, domain)]) {
-        delete zipFiles[userDomainPath(username, domain)];
+      if(zipFiles[apiKey]) {
+        delete zipFiles[apiKey];
       }
       stepDone();
     }
   ], callback);
 };
 
-module.exports.createZip = function (username, domain, password, callback) {
-  module.exports.appendLog(username, domain, 'Creating backup archive...');
-  var token = module.exports.infos(username, domain).token;
-  var hash = crypto.createHash('md5').update(token).digest('hex');
+module.exports.createZip = function (apiEndpoint, password, callback) {
+  module.exports.appendLog(apiEndpoint, 'Creating backup archive...');
+  var fullApiEndpoint = module.exports.infos(apiEndpoint).apiEndpoint;
+  var hash = crypto.createHash('md5').update(fullApiEndpoint).digest('hex');
   var file = hash + '.zip';
   if (!fs.existsSync(zipPath)) {
     fs.mkdirSync(zipPath);
   }
-  var backupDir = module.exports.backupDir(username, domain).baseDir;
+  var backupDir = module.exports.backupDir(apiEndpoint).baseDir;
   var spawn = require('child_process').spawn;
   var zipCmd = spawn('zip',['-P', password , path.normalize(zipPath + '/' +file),
     '-r', './'], {cwd: backupDir});
   zipCmd.stdout.on('data', function(data) {
-    module.exports.appendLog(username, domain, data);
+    module.exports.appendLog(apiEndpoint, data);
   });
   zipCmd.on('exit', function(code) {
     if(code !== 0) {
       return callback('Archive creation error');
     }
-    zipFiles[userDomainPath(username, domain)] = file;
+    zipFiles[keyFromEndpoint(apiEndpoint)] = file;
 
-    module.exports.backupDir(username, domain).deleteDirs(function(err) {
+    module.exports.backupDir(apiEndpoint).deleteDirs(function(err) {
       callback(err, file);
     });
   });
 };
 
-module.exports.backupDir = function (username, domain) {
-  if (!backupDirs[userDomainPath(username, domain)]) {
-    backupDirs[userDomainPath(username, domain)] = new BackupDirectory(username, domain, backupPath);
+module.exports.backupDir = function (apiEndpoint) {
+  const apiKey = keyFromEndpoint(apiEndpoint)
+  if (!backupDirs[apiKey]) {
+    backupDirs[apiKey] = new BackupDirectory(apiEndpoint, backupPath);
   }
-  return backupDirs[userDomainPath(username, domain)];
+  return backupDirs[apiKey];
 };
 
 function userDbPath (endpoint, extra) {
-  var str = path.normalize(dbPath + '/' + endpoint);
+  const userKey = keyFromEndpoint(endpoint);
+
+  var str = path.normalize(dbPath + '/' + userKey);
   mkdirp.sync(str);
 
   if (extra) {
@@ -192,6 +201,20 @@ function userDbPath (endpoint, extra) {
   return str;
 }
 
-function userDomainPath (username, domain) {
-  return username + '.' + domain;
+function keyFromEndpoint(apiEndpoint) {
+  
+  if (! apiEndpoint || ! apiEndpoint.startsWith('https://')) { 
+    throw new Error('Invalid apiEndPoint [' + apiEndpoint + ']');
+  }
+  const { endpoint } =  extractTokenAndAPIEndpoint(apiEndpoint);
+  // remove https 
+  let str = endpoint.substring(8);
+  // enventual trailing / 
+  if (str.charAt(str.length -1 ) === '/') {
+    str = str.substring(0, str.length -1);
+  }
+  const result = str.replace('/\//g', '_'); // replace '/' with '_'
+  return result;
 }
+
+module.exports.keyFromEndpoint = keyFromEndpoint;

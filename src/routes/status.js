@@ -9,15 +9,12 @@ router.post('/', function (req, res) {
     'Transfer-Encoding': 'chunked'
   });
 
-  var body = req.body,
-      username = body.username,
-      domain = config.get('pryv:domain');
 
-  if(db.infos(username, domain).token === body.token) {
-    db.watchLog(username, domain, function(log, end) {
+  if(db.infos(apiEndpoint).token === body.token) {
+    db.watchLog(apiEndpoint, function(log, end) {
       res.write(log);
       if(end) {
-        db.unwatchLog(username, domain);
+        db.unwatchLog(apiEndpoint);
         res.end('END');
       }
     });

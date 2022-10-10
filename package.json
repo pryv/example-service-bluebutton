@@ -1,6 +1,6 @@
 {
   "name": "service-bluebutton",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Web service for clients to download all their data",
   "main": "src/app.js",
   "scripts": {
@@ -21,8 +21,8 @@
     "tool",
     "service"
   ],
-  "author": "Ilia Kebets <kebetsi@gmail.com>",
-  "license": "ISC",
+  "author": "Pryv S.A. <info@pryv.com>",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/pryv/service-bluebutton/issues"
   },
@@ -50,7 +50,7 @@
     "superagent": "^5.0.5",
     "winston": "^2.3.0",
     "util": "latest",
-    "@pryv/account-backup": "git://github.com/pryv/pryv-account-backup.git",
+    "@pryv/account-backup": "git+https://github.com/pryv/pryv-account-backup.git",
     "crypto": "latest",
     "lodash": "^4.17.11",
     "parse-domain": "^2.3.4"

@@ -54,6 +54,7 @@ module.exports.deleteBackup = function () {
 };
 
 function ajaxPost (url, data, callback) {
+  console.log('POST ' + url, data);
   $.ajax({
     url: url,
     type : 'POST',
