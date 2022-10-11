@@ -10,12 +10,12 @@ router.post('/', async function (req, res) {
   const password = body.password;
   const username = body.username;
 
-  if (! username || ! password) {
+  if (!username || !password) {
     return res.status(400).send('Please provide your username and password');
   }
 
   let serviceInfoUrl;
-  if(!config.get('pryv:enforceDomain') && body.serviceInfoUrl) {
+  if (!config.get('pryv:enforceDomain') && body.serviceInfoUrl) {
     serviceInfoUrl = body.serviceInfoUrl;
   } else {
     serviceInfoUrl = config.get('pryv:serviceInfoUrl');
@@ -27,68 +27,65 @@ router.post('/', async function (req, res) {
     'serviceInfoUrl': serviceInfoUrl
   };
 
-  backup.signInToPryv(params, function(err, connection) {
-    if(err) {
-      // Trick to return a user readable error in case of host not found
-      if(err.code && err.code.indexOf && err.code.indexOf('ENOTFOUND') !== -1) {
-        err = 'Username not found';
-      }
-      return res.status(400).send(err);
+  let connection = null;
+  try {
+    connection = await backup.signInToPryv(params);
+  } catch (err) {
+    // Trick to return a user readable error in case of host not found
+    if (err.code && err.code.indexOf && err.code.indexOf('ENOTFOUND') !== -1) {
+      err = 'Username not found';
     }
+    return res.status(400).send(err);
+  }
 
-    const domain = connection.settings.domain;
-    config.set('pryv:domain', domain);
+  const apiEndpoint = connection.apiEndpoint;
+  db.save(apiEndpoint, 'apiEndpoint', apiEndpoint);
 
-    // Save token
-    var token = connection.auth;
-    db.save(connection.username, domain, 'token', token);
+  if (!db.infos(apiEndpoint).running) {
+    // Start backup
+    var params = {
+      'backupDirectory': db.backupDir(apiEndpoint),
+      /* jshint ignore:start */
+      'includeAttachments': (body.includeAttachments != 0),
+      'includeTrashed': (body.includeTrashed != 0),
+      /* jshint ignore:end */
+      'apiUrl': connection.apiUrl
+    };
+    backup.startOnConnection(connection, params,
+      _.bind(backupComplete, null, _, apiEndpoint, password),
+      _.bind(db.appendLog, null, apiEndpoint));
+    db.save(apiEndpoint, 'running', true);
+  }
 
-    if(!db.infos(username, domain).running) {
-      // Start backup
-      var params = {
-        'backupDirectory' : db.backupDir(username, domain),
-        /* jshint ignore:start */
-        'includeAttachments' : (body.includeAttachments != 0),
-        'includeTrashed' : (body.includeTrashed != 0),
-        /* jshint ignore:end */
-        'apiUrl' : connection.apiUrl
-      };
-      backup.startOnConnection(connection, params,
-        _.bind(backupComplete, null, _, username, domain, password),
-        _.bind(db.appendLog, null, username, domain));
-      db.save(username, domain, 'running', true);
-    }
-
-    res.status(200).send({'token': token, 'log': db.log(username, domain)});
-  });
+  res.status(200).send({ 'apiEndpoint': connection.apiEndpoint });
 });
 
-var backupComplete = function(err, username, domain, password) {
-  if(err) {
-    db.appendLog(username, domain, err, true);
-    db.deleteBackup(username, domain, function(err) {
-      if(err) {
+var backupComplete = function (err, apiEndpoint, password) {
+  if (err) {
+    db.appendLog(apiEndpoint, err, true);
+    db.deleteBackup(apiEndpoint, function (err) {
+      if (err) {
         return console.log(err);
       }
     });
   }
-  db.createZip(username, domain, password, function(err, file) {
+  db.createZip(apiEndpoint, password, function (err, file) {
     if (err) {
-      db.appendLog(username, domain, 'Zip creation error', true);
-      db.deleteBackup(username, domain, function(err) {
-        if(err) {
+      db.appendLog(apiEndpoint, 'Zip creation error', true);
+      db.deleteBackup(apiEndpoint, function (err) {
+        if (err) {
           return console.log(err);
         }
       });
     }
-    db.appendLog(username, domain, 'Backup completed!');
-    db.appendLog(username, domain, 'Backup file: ' + file, true);
+    db.appendLog(apiEndpoint, 'Backup completed!');
+    db.appendLog(apiEndpoint, 'Backup file: ' + file, true);
 
     var ttl = config.get('db:ttl');
-    if(ttl) {
-      setTimeout(function(){
-        db.deleteBackup(username, domain, function(err) {
-          if(err) {
+    if (ttl) {
+      setTimeout(function () {
+        db.deleteBackup(apiEndpoint, function (err) {
+          if (err) {
             return console.log(err);
           }
         });

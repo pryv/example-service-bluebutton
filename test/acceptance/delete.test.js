@@ -12,24 +12,22 @@ require('readyness/wait/mocha');
 var serverBasePath = 'http://' + config.get('http:ip') + ':' + config.get('http:port');
 
 describe('Delete', function () {
-  var domain = config.get('pryv:domain');
+  var domain = 'pryv.me';
 
-  var credentials = {
-    username: 'validuser',
-    token : 'validtoken',
-    domain : domain
-  };
+  const token = 'validtoken';
+  const fullApiEndpoint = 'https://' + token + '@validuser.' + domain;
+  const apiEndpoint = 'https://validuser.' + domain;
 
-  it('should be successful when trying to delete user backup with valid credentials', function (done) {
+  it('[ABCD] should be successful when trying to delete user backup with valid credentials', function (done) {
     async.series([
-      function saveToken(stepDone) {
-        db.save(credentials.username, domain, 'token', credentials.token);
-        should.exists(db.infos(credentials.username, domain));
-        should.exists(db.infos(credentials.username, domain).token);
+      function saveApiEndpoint(stepDone) {
+        db.save(fullApiEndpoint, 'apiEndpoint', fullApiEndpoint);
+        should.exists(db.infos(apiEndpoint));
+        should.exists(db.infos(apiEndpoint).apiEndpoint);
         stepDone();
       },
       function deleteRequest(stepDone) {
-        request.post(serverBasePath + '/delete').send(credentials).set('Content-type','application/json').end(function (err, res) {
+        request.post(serverBasePath + '/delete').send({apiEndpoint: fullApiEndpoint}).set('Content-type','application/json').end(function (err, res) {
           should.not.exists(err);
           res.status.should.eql(200);
           stepDone();
@@ -38,8 +36,8 @@ describe('Delete', function () {
     ], done);
   });
 
-  it('should send an error when trying to delete user backup with invalid credentials', function (done) {
-    request.post(serverBasePath + '/delete').send(credentials).set('Content-type','application/json').end(function (err, res) {
+  it('[EFGH] should send an error when trying to delete user backup with invalid credentials', function (done) {
+    request.post(serverBasePath + '/delete').send({apiEndpoint: 'https://invalid@validuser.' + domain}).set('Content-type','application/json').end(function (err, res) {
       should.exists(err);
       res.status.should.not.eql(200);
       done();

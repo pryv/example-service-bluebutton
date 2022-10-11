@@ -8,16 +8,14 @@ router.post('/', function (req, res) {
   res.writeHead(200, { 'Content-Type': 'application/octet-stream',
     'Transfer-Encoding': 'chunked'
   });
+  const apiEndpoint = req.body?.apiEndpoint;
 
-  var body = req.body,
-      username = body.username,
-      domain = config.get('pryv:domain');
 
-  if(db.infos(username, domain).token === body.token) {
-    db.watchLog(username, domain, function(log, end) {
+  if(db.infos(apiEndpoint).apiEndpoint === apiEndpoint) {
+    db.watchLog(apiEndpoint, function(log, end) {
       res.write(log);
       if(end) {
-        db.unwatchLog(username, domain);
+        db.unwatchLog(apiEndpoint);
         res.end('END');
       }
     });

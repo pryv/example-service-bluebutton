@@ -1,15 +1,14 @@
 var express = require('express'),
     router = express.Router(),
-    db = require('../../src/storage/db'),
-    config = require('../config');
+    pryv = require('pryv');
+    db = require('../../src/storage/db');
 
-router.post('/', function (req, res) {
+router.post('/',  function (req, res) {
     var body = req.body,
-        username = body.username,
-        domain = config.get('pryv:domain');
+      apiEndpoint = body.apiEndpoint;
 
-    if(db.infos(username, domain) && db.infos(username, domain).token === body.token) {
-        db.deleteBackup(username, domain, function(err) {
+    if(db.infos(apiEndpoint) && db.infos(apiEndpoint).apiEndpoint === apiEndpoint) {
+        db.deleteBackup(apiEndpoint, function(err) {
             if(err) {
                 return res.status(500).send(err);
             }
