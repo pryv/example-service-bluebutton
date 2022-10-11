@@ -39,9 +39,7 @@ router.post('/', async function (req, res) {
   }
 
   const apiEndpoint = connection.apiEndpoint;
-  // Save token
-  var token = connection.token;
-  db.save(apiEndpoint, 'token', connection.token);
+  db.save(apiEndpoint, 'apiEndpoint', apiEndpoint);
 
   if (!db.infos(apiEndpoint).running) {
     // Start backup

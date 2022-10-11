@@ -42,23 +42,6 @@ nconf.defaults({
     port: '9000',
     ip: '0.0.0.0' // interface to bind,
   },
-  useRecLa: true,
-  debug: {
-    middlewareDebug : true
-  },
-  airbrake: {
-    key: 'ToGenerateOne',
-    projectId: 'ToGenerateOne'
-  },
-  pryvAccess: {  // access params of pryv.io token
-    name: 'backup-service',
-    permissions: [
-      {
-        streamId: '*',
-        level: 'read'
-      }
-    ]
-  },
   db: {
     path: path.normalize(__dirname + '/../db-files/'),
     backup: path.normalize(__dirname + '/../backup/'),

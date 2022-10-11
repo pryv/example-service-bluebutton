@@ -20,7 +20,7 @@ describe('Delete', function () {
 
   it('[ABCD] should be successful when trying to delete user backup with valid credentials', function (done) {
     async.series([
-      function saveToken(stepDone) {
+      function saveApiEndpoint(stepDone) {
         db.save(fullApiEndpoint, 'apiEndpoint', fullApiEndpoint);
         should.exists(db.infos(apiEndpoint));
         should.exists(db.infos(apiEndpoint).apiEndpoint);

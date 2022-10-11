@@ -46,24 +46,24 @@ describe('Storage', function () {
     ], done);
   });
 
-  it('[BLOP] should save the user\'s token and update it', function (done) {
+  it('[BLOP] should save the user\'s something and update it', function (done) {
     async.series([
-      function saveToken(stepDone) {
-        db.save(credentials.apiEndpoint, 'token', dummyToken);
+      function saveSomething(stepDone) {
+        db.save(credentials.apiEndpoint, 'something', dummyToken);
         stepDone();
       },
       function verifySaved(stepDone) {
         should.exists(db.infos(credentials.apiEndpoint));
-        should.equal(db.infos(credentials.apiEndpoint).token, dummyToken);
+        should.equal(db.infos(credentials.apiEndpoint).something, dummyToken);
         stepDone();
       },
       function updateToken(stepDone) {
-        db.save(credentials.apiEndpoint, 'token', dummyToken + 'updated');
+        db.save(credentials.apiEndpoint, 'something', dummyToken + 'updated');
         stepDone();
       },
       function verifyUpdated(stepDone) {
         should.exists(db.infos(credentials.apiEndpoint));
-        should.equal(db.infos(credentials.apiEndpoint).token, dummyToken + 'updated');
+        should.equal(db.infos(credentials.apiEndpoint).something, dummyToken + 'updated');
         stepDone();
       },
       function clean(stepDone) {
@@ -114,7 +114,7 @@ describe('Storage', function () {
 
     async.series([
       function saveToken(stepDone) {
-        db.save(credentials.apiEndpoint, 'token', dummyToken);
+        db.save(credentials.apiEndpoint, 'apiEndpoint', credentials.apiEndpoint);
         should.exists(db.infos(credentials.apiEndpoint));
         stepDone();
       },
