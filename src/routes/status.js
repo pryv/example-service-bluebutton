@@ -8,9 +8,10 @@ router.post('/', function (req, res) {
   res.writeHead(200, { 'Content-Type': 'application/octet-stream',
     'Transfer-Encoding': 'chunked'
   });
+  const apiEndpoint = req.body?.apiEndpoint;
 
 
-  if(db.infos(apiEndpoint).token === body.token) {
+  if(db.infos(apiEndpoint).apiEndpoint === apiEndpoint) {
     db.watchLog(apiEndpoint, function(log, end) {
       res.write(log);
       if(end) {

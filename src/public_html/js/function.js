@@ -6,7 +6,7 @@ var $ = require('jquery'),
 var last_index = 0,
   username = '',
   password = '',
-  token = '';
+  apiEndpoint = '';
 
 module.exports.loginProcess = function() {
   if ($('.loginView').is(':visible') === false) { return; }
@@ -34,7 +34,7 @@ module.exports.loginProcess = function() {
 
     ajaxPost('/login', data, function (res) {
       if (res) {
-        token = res.token;
+        apiEndpoint = res.apiEndpoint;
         display.stateChange('running');
         if (res.log) {
           checkLog(res.log);
@@ -46,7 +46,7 @@ module.exports.loginProcess = function() {
 };
 
 module.exports.deleteBackup = function () {
-  ajaxPost('/delete', { username: username, token: token}, function (res) {
+  ajaxPost('/delete', { username: username, apiEndpoint: apiEndpoint}, function (res) {
     if (res) {
       display.stateChange('done');
     }
@@ -87,7 +87,7 @@ function readStatus(username) {
     checkLog(str);
   };
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  xhr.send(JSON.stringify({username: username, token: token}));
+  xhr.send(JSON.stringify({username: username, apiEndpoint: apiEndpoint}));
 }
 
 function checkLog(str) {
