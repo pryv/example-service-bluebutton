@@ -8,16 +8,20 @@ var last_index = 0,
   password = '',
   apiEndpoint = '';
 
-module.exports.loginProcess = function() {
-  if ($('.loginView').is(':visible') === false) { return; }
+let actuallyLoggingIn = false;
 
+module.exports.loginProcess = function() {
+  if ($('.loginView').is(':visible') === false || actuallyLoggingIn) { return; }
+  actuallyLoggingIn = true;
   username = $('#username').val();
   password = $('#password').val();
 
   if(username === '' || password === '') {
     display.colorError();
     display.alertDisplay('You must enter your username and password !');
-  } else {
+    actuallyLoggingIn = false;
+    return;
+  } 
 
     var search = new RegExp('[?&]'+encodeURIComponent('serviceInfoUrl')+'=([^&]*)').exec(window.location.search);
     let serviceInfoUrl = null;
@@ -31,7 +35,7 @@ module.exports.loginProcess = function() {
       includeAttachments: $('#attachment:checked').length,
       serviceInfoUrl: serviceInfoUrl
     };
-
+    display.alertDisplay('Login in ...');
     ajaxPost('/login', data, function (res) {
       if (res) {
         apiEndpoint = res.apiEndpoint;
@@ -40,9 +44,9 @@ module.exports.loginProcess = function() {
           checkLog(res.log);
         }
         readStatus(username);
-      }
+      } 
+      actuallyLoggingIn = false;
     });
-  }
 };
 
 module.exports.deleteBackup = function () {
@@ -104,7 +108,7 @@ function checkLog(str) {
       display.stateChange('done');
       $('#doneMessage').text('An error occurred during the backup, please try again.');
     }
-  } else if (lastLines.length === 2 && lastLines[1].substring(0, 13) === 'Backup file: '){
+  } else if (lastLines.length === 2 && lastLines[1].substring(0, 13) === 'Backup file: '){
     display.logToConsole(str);
     backupComplete(lastLines[1].substring(13, str.length));
   } else {

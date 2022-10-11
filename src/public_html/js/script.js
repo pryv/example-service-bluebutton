@@ -12,8 +12,7 @@ $(document).ready(function(){
     if (key.which === 13) { func.loginProcess(); }
     if (key.which === 0) { $('.alert').hide(); }
   });
-  $('#login').click(function(){
-    this.disabled = true;
+  $('#login').click(function() {
     func.loginProcess();
   });
   $('#delete').click(function() {
