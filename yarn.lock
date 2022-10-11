@@ -17,8 +17,8 @@
     kuler "^2.0.0"
 
 "@pryv/account-backup@git+https://github.com/pryv/pryv-account-backup.git":
-  version "0.2.1"
-  resolved "git+https://github.com/pryv/pryv-account-backup.git#a952f47d00e582b72597b60c1432707a8ac7a6cc"
+  version "0.2.2"
+  resolved "git+https://github.com/pryv/pryv-account-backup.git#2bb25c3807eb406390a688abce9fdf0c1f2dd36f"
   dependencies:
     JSONStream "^1.3.4"
     async "~0.9.0"
@@ -26,7 +26,7 @@
     lodash "^4.17.20"
     mkdirp "1.0.4"
     nconf "^0.11.0"
-    pryv "^2.1.3"
+    pryv "^2.3.3"
     read "^1.0.7"
     winston "3.3.3"
 
@@ -3198,10 +3198,10 @@ proxy-addr@~2.0.7:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
 
-pryv@^2.1.3:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/pryv/-/pryv-2.3.2.tgz#8b9cf67ecf02fd9325b41c7ed4ecaa64ab2ad0c6"
-  integrity sha512-Cf6SujRh8vNSdiMO32aVFIfmOrqT/qyC875ql8uR8Qw8QG1HSaZCHZ4hG0hghgU38FJaXnAr/gze5P27ayn8lA==
+pryv@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/pryv/-/pryv-2.3.3.tgz#a096a57ab73f47bef30381d6cdd7141b1f109c68"
+  integrity sha512-QrmglS5JRWRiAVhjtXzfXZGvFJqaiGn8Noa2DmxlNHAbQKoPugrTu45t9gqSn5SDk92IudM5KrpxE7/il7GBbg==
   dependencies:
     superagent "^7.1.6"
 
